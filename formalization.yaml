@@ -1,0 +1,133 @@
+project: BernoulliComparison
+description: >
+  Lean 4 formalization of the comparison principle for barrier-defined
+  viscosity solutions of the parabolic Bernoulli (one-phase free boundary)
+  problem u_t = Lap u in {u > 0}, |grad u| = Q on the free boundary
+  d{u > 0}, on U x (0, T] with U bounded and open and Q Lipschitz and
+  positive: a supersolution and a relaxed subsolution that are strictly
+  ordered near the parabolic boundary stay strictly ordered.
+lean_toolchain: leanprover/lean4:v4.30.0
+mathlib: v4.30.0
+dependencies:
+  - name: parabolic_basic_theory
+    url: https://github.com/willmfeldman/parabolic-basic-theory
+    rev: v0.1.0  # 35be935ced4a87143ee33f1e718d3ba0951cb7c8
+  - name: viscosity_solns
+    url: https://github.com/willmfeldman/viscosity-solution-theory
+    rev: v0.2.0  # 3a9310934abe88875ed27fc6343ec1423f2850bc (via parabolic_basic_theory)
+  - name: AleksandrovDifferentiability
+    url: https://github.com/willmfeldman/aleksandrov-differentiability
+    rev: v0.2.0  # 730e7e9256c7e8018abad3bbc50a0598c656b61c (via parabolic_basic_theory)
+permitted_axioms: [propext, Quot.sound, Classical.choice]
+automation:
+  methods:
+    - method: agent-assisted formalization
+      models: [Claude Opus]
+      framework: "Agent-assisted Lean development (Claude Opus coding agents) with human direction and review"
+      review_status: human-supervised
+      notes: >-
+        The Lean code was written with Claude Opus coding agents under human
+        supervision. Exact model history and per-declaration provenance are
+        not recorded in this manifest.
+targets:
+  - id: relaxed-comparison
+    kind: headline-theorem
+    expected_axioms: [propext, Quot.sound, Classical.choice]
+    title: Comparison between a relaxed subsolution and a supersolution
+    source: "Barrier definitions of viscosity solutions; cf. I. C. Kim, J. Differential Equations 191 (2003) 470-489"
+    module: BernoulliComparison.Statements.Main
+    declaration: BernoulliComparison.para_relaxed_comparison
+    related_declarations:
+      - BernoulliComparison.Heat.caloric_dirichlet_ball
+    informal: >
+      Let U be bounded and open, Q Lipschitz on the closure of U with a
+      positive lower bound, T > 0, and u, v continuous on closure(U) x [0, T].
+      If (u, E) is a relaxed subsolution and v a supersolution in U x (0, T]
+      (both defined by comparison with classical strict barriers), and u < v
+      on E near the parabolic boundary, then u < v on E in closure(U) x [0, T].
+      The related declaration is the classical solvability of the heat
+      Dirichlet problem on ball cylinders, taken from parabolic_basic_theory.
+    challenge: challenges/comparison
+    challenge_theorems:
+      - BernoulliComparison.challenge_relaxed_comparison
+      - BernoulliComparison.challenge_strict_comparison
+  - id: strict-comparison
+    kind: headline-theorem
+    expected_axioms: [propext, Quot.sound, Classical.choice]
+    title: Comparison between a subsolution and a supersolution
+    source: "Corollary of relaxed-comparison with E = closure {u > 0}"
+    module: BernoulliComparison.Corollary.StrictComparison
+    declaration: BernoulliComparison.para_strict_comparison
+    related_declarations:
+      - BernoulliComparison.IsParaSub.isParaRelaxedSub_closure
+    informal: >
+      The same statement for a standard subsolution u, with the ordering
+      u < v taken on the closure of {u > 0}. It follows from relaxed-comparison
+      in a few lines, so it adds little independent coverage; its challenge
+      theorem is in the same workspace as the relaxed form.
+  - id: convolution
+    kind: technical-input
+    expected_axioms: [propext, Quot.sound, Classical.choice]
+    title: Sup- and inf-convolution preserve the solution classes
+    source: "Space-time sup/inf-convolution over a compact kernel containing 0"
+    module: BernoulliComparison.Convolution.Preservation
+    declaration: BernoulliComparison.IsParaRelaxedSub.supConv
+    related_declarations:
+      - BernoulliComparison.IsParaSuper.infConv
+    informal: >
+      Sup-convolution over a compact kernel K containing 0, with spatial
+      radius at most l, maps a relaxed subsolution for Q to a relaxed
+      subsolution for Q - L l on the shrunken domain, and inf-convolution maps
+      a supersolution for Q to a supersolution for Q + L l, where L is the
+      Lipschitz constant of Q.
+    challenge: challenges/convolution
+    challenge_theorems:
+      - BernoulliComparison.challenge_supConv
+      - BernoulliComparison.challenge_infConv
+  - id: heat-bridge
+    kind: technical-input
+    expected_axioms: [propext, Quot.sound, Classical.choice]
+    title: Barrier solutions are viscosity solutions of the heat equation
+    source: "Barrier-to-touching reduction"
+    module: BernoulliComparison.Touching.Caloric
+    declaration: BernoulliComparison.IsParaRelaxedSub.subcaloric
+    related_declarations:
+      - BernoulliComparison.IsParaSuper.supercaloric_on_pos
+      - BernoulliComparison.IsParaRelaxedSub.touchSub
+      - BernoulliComparison.IsParaSuper.touchSuper
+    informal: >
+      A relaxed subsolution is a viscosity subsolution of the heat equation in
+      U x I, and a supersolution is a viscosity supersolution of the heat
+      equation in its positivity set, both for C^infinity test functions
+      crossing from the past. The related declarations (in
+      BernoulliComparison.Touching.ClassBridge) give the free-boundary
+      alternatives: at a touching point either the heat inequality holds or
+      the test function vanishes there with the gradient bound against Q.
+    challenge: challenges/heat-bridge
+    challenge_theorems:
+      - BernoulliComparison.challenge_subcaloric
+      - BernoulliComparison.challenge_supercaloric
+  - id: core-no-crossing
+    kind: assembly-theorem
+    expected_axioms: [propext, Quot.sound, Classical.choice]
+    title: The convolved pair does not cross
+    source: "First-contact analysis: non-polar and polar normals"
+    module: BernoulliComparison.Main.Core
+    declaration: BernoulliComparison.Main.core_no_crossing
+    related_declarations:
+      - BernoulliComparison.NonPolar.no_nonpolar
+      - BernoulliComparison.Polar.no_polar
+    informal: >
+      In the packaged configuration Crossing.Config (the regularized pair
+      after the Q-gap, the sup/inf-convolutions and the margin at the
+      parabolic boundary), the convolved subsolution stays strictly below the
+      convolved supersolution: a first contact point would have a non-polar
+      or a polar normal, and both are excluded. The hypotheses are a packaged
+      structure, discharged inside para_relaxed_comparison, so this target
+      has no challenge of its own; it is checked for name and axioms only.
+supplemental_challenges:
+  - id: model-sanity
+    title: Non-vacuity and sign-convention model cases
+    challenge: challenges/model-sanity
+    challenge_theorems:
+      - BernoulliComparison.challenge_model_sanity

@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata in this file."
+title: "Comparison for the Parabolic Bernoulli Problem"
+type: software
+authors:
+  - family-names: Feldman
+    given-names: William M.
+repository-code: "https://github.com/willmfeldman/bernoulli-parabolic-comparison"
+license: Apache-2.0
+version: 0.1.0
+abstract: >-
+  A Lean 4 formalization of the comparison principle between supersolutions and
+  relaxed subsolutions of the parabolic Bernoulli (one-phase free boundary)
+  problem, for viscosity solutions defined by comparison with classical strict
+  barriers, following the approach of I. C. Kim (2003).
+keywords:
+  - Lean 4
+  - Mathlib
+  - free boundary problems
+  - viscosity solutions

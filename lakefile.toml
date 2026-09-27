@@ -1,0 +1,25 @@
+name = "bernoulli_parabolic_comparison"
+version = "0.1.0"
+description = "Lean 4 formalization of the comparison principle for barrier-defined viscosity solutions of the parabolic Bernoulli (one-phase free boundary) problem"
+keywords = ["math", "free-boundary", "viscosity-solutions", "parabolic-pde"]
+defaultTargets = ["BernoulliComparison"]
+
+[leanOptions]
+pp.unicode.fun = true
+relaxedAutoImplicit = false
+autoImplicit = false
+weak.linter.mathlibStandardSet = true
+maxSynthPendingDepth = 3
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.30.0"
+
+[[require]]
+name = "parabolic_basic_theory"
+git = "https://github.com/willmfeldman/parabolic-basic-theory"
+rev = "v0.1.0"
+
+[[lean_lib]]
+name = "BernoulliComparison"

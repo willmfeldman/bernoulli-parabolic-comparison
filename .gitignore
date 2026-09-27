@@ -1,0 +1,5 @@
+/.lake
+.DS_Store
+comparator-report/
+challenges/*/.lake
+challenges/*/.lake/
