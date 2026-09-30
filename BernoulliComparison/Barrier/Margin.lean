@@ -49,7 +49,7 @@ theorem exists_mem_parBdry_dist_le_of_not_mem_interiorRegion {U : Set (E d)} {T 
     {p : E d × ℝ} (hU : IsOpen U) (hp : p ∈ closure U ×ˢ Icc 0 T)
     (hpρ : p ∉ interiorRegion U T ρ) : ∃ q ∈ parBdry U 0 T, dist p q ≤ ρ := by
   obtain ⟨hpU, hp0, hpT⟩ := hp
-  simp only [interiorRegion, mem_setOf_eq, not_and, not_le] at hpρ
+  simp only [interiorRegion, mem_ofPred_eq, not_and, not_le] at hpρ
   by_cases hball : closedBall p.1 ρ ⊆ U
   · by_cases ht : ρ ≤ p.2
     · exact absurd hpT (not_le.mpr (hpρ hball ht))
@@ -142,7 +142,7 @@ theorem margin_of_nhdsSet {U : Set (E d)} {T : ℝ} {u v : E d × ℝ → ℝ}
     · obtain ⟨p₀, hp₀, hmin⟩ := hFc.exists_isMinOn hF ((hv.sub hu).mono hFD)
       refine ⟨v p₀ - u p₀, sub_pos.mpr (hFN p₀ hp₀), fun p hp ↦ ?_⟩
       have := hmin hp
-      simp only [mem_setOf_eq] at this
+      simp only [mem_ofPred_eq, Pi.sub_apply] at this
       linarith
   refine ⟨ρ₀, hρ₀, min_le_right _ _, θ, hθ, fun p hpE hpρ ↦ hθF p ⟨hpE, ?_⟩⟩
   obtain ⟨q, hq, hd⟩ := exists_mem_parBdry_dist_le_of_not_mem_interiorRegion hU (hED hpE) hpρ

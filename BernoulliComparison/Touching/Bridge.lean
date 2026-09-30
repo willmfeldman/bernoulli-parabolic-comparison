@@ -97,9 +97,9 @@ theorem eventually_closedParCyl_subset_parCyl {x : E d} {t r₀ : ℝ} (hr₀ : 
 
 theorem eventually_mul_sq_lt (η : ℝ) {g : ℝ} (hg : 0 < g) :
     ∀ᶠ r in 𝓝[>] (0 : ℝ), η * r ^ 2 < g := by
+  have hc : Continuous fun r : ℝ ↦ η * r ^ 2 := continuous_const.mul (continuous_pow 2)
   have : Tendsto (fun r : ℝ ↦ η * r ^ 2) (𝓝 0) (𝓝 0) := by
-    simpa using ((continuous_const.mul (continuous_pow 2)).tendsto (0 : ℝ) :
-      Tendsto (fun r : ℝ ↦ η * r ^ 2) (𝓝 0) (𝓝 (η * 0 ^ 2)))
+    simpa using hc.tendsto 0
   exact (this.eventually (gt_mem_nhds hg)).filter_mono nhdsWithin_le_nhds
 
 /-- The parabolic boundary of `B_r(x) × (t - r², t]` lies in the closed cylinder. -/
@@ -344,7 +344,8 @@ theorem IsParaSuper.false_of_crossesFromBelow (hsup : IsParaSuper U Q I v)
   have hh₁d : Differentiable ℝ h₁ := (contDiff_bumpP p (n := 1)).differentiable one_ne_zero
   obtain ⟨M, hM0, hMev⟩ := exists_bound_bumpP p
   have hHev : ∀ᶠ q in 𝓝 p, dₜ φ q - lapₓ φ q < -(H / 2) :=
-    ((continuous_dₜ hφ1).sub (continuous_lapₓ hφ2)).continuousAt.eventually_lt continuousAt_const
+    (show Continuous fun q ↦ dₜ φ q - lapₓ φ q from
+      (continuous_dₜ hφ1).sub (continuous_lapₓ hφ2)).continuousAt.eventually_lt continuousAt_const
       (by linarith)
   obtain ⟨g, hg, hgev⟩ : ∃ g > 0, (∀ᶠ q in 𝓝 p, 2 * g < φ q) ∨
       (∀ᶠ q in 𝓝 p, Q q.1 + 2 * g < ‖gradₓ φ q‖) := by

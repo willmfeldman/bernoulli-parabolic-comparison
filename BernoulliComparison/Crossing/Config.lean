@@ -77,10 +77,10 @@ theorem add_mem_closure_of_forall {A B : Set (E d)} {v x : E d} (h : ∀ y ∈ A
 /-- `c • Q` is `(c L)`-Lipschitz if `Q` is `L`-Lipschitz, `c ≥ 0`. -/
 theorem lipschitzOnWith_const_smul {s : Set (E d)} {Q : E d → ℝ} {L : NNReal}
     (hQ : LipschitzOnWith L Q s) {c : ℝ} (hc : 0 ≤ c) :
-    LipschitzOnWith (⟨c, hc⟩ * L) (c • Q) s := by
+    LipschitzOnWith (.mk c hc * L) (c • Q) s := by
   refine LipschitzOnWith.of_dist_le_mul fun x hx y hy ↦ ?_
   have h := hQ.dist_le_mul x hx y hy
-  simp only [Pi.smul_apply, smul_eq_mul, Real.dist_eq, NNReal.coe_mul] at h ⊢
+  simp only [Pi.smul_apply, smul_eq_mul, Real.dist_eq, NNReal.coe_mul, NNReal.coe_mk] at h ⊢
   rw [← mul_sub, abs_mul, abs_of_nonneg hc, mul_assoc]
   exact mul_le_mul_of_nonneg_left h hc
 
@@ -488,7 +488,7 @@ theorem convStep_zero_one : ConvStep P.U₀ P.U₁ 0 T (2 * P.μ) T P.B :=
 /-! ### (b) The convolved pairs are relaxed sub / supersolutions -/
 
 theorem lipschitzOnWith_smul_Q {a : ℝ} (ha : 0 ≤ a) :
-    LipschitzOnWith (⟨a, ha⟩ * P.L) (a • Q) (closure U) :=
+    LipschitzOnWith (.mk a ha * P.L) (a • Q) (closure U) :=
   lipschitzOnWith_const_smul P.lipschitzOnWith ha
 
 theorem one_add_δ_pos : 0 < 1 + P.δ := by linarith [P.δ_pos]
@@ -500,40 +500,40 @@ theorem isParaRelaxedSub_zero : IsParaRelaxedSub P.U₀ P.Qsub₀ (Ioc 0 T) P.u�
   have h := P.isParaRelaxedSub_hat.supConv P.continuousOn_uhat P.convStep_zero P.zero_mem_K₀
     (fun _ hk ↦ P.norm_fst_le_of_mem_K₀ hk) (P.lipschitzOnWith_smul_Q P.one_add_δ_pos.le)
   convert h using 1
-  funext x
-  simp only [Qsub₀, Pi.smul_apply, smul_eq_mul, NNReal.coe_mul]
-  change _ = _ - (1 + P.δ) * _ * _
-  ring
+  · funext x
+    simp only [Qsub₀, Pi.smul_apply, smul_eq_mul, NNReal.coe_mul, NNReal.coe_mk]
+    ring
+  all_goals rfl
 
 /-- `v₀` is a supersolution for `Q₀⁺` on `U₀ × (0, T]`. -/
 theorem isParaSuper_zero : IsParaSuper P.U₀ P.Qsuper₀ (Ioc 0 T) P.v₀ := by
   have h := P.isParaSuper_hat.infConv P.continuousOn_vhat P.convStep_zero P.zero_mem_K₀
     (fun _ hk ↦ P.norm_fst_le_of_mem_K₀ hk) (P.lipschitzOnWith_smul_Q P.one_sub_δ_pos.le)
   convert h using 1
-  funext x
-  simp only [Qsuper₀, Pi.smul_apply, smul_eq_mul, NNReal.coe_mul]
-  change _ = _ + (1 - P.δ) * _ * _
-  ring
+  · funext x
+    simp only [Qsuper₀, Pi.smul_apply, smul_eq_mul, NNReal.coe_mul, NNReal.coe_mk]
+    ring
+  all_goals rfl
 
 /-- `(u₁, E₁)` is a relaxed subsolution for `Q₁⁻` on `U₁ × (2μ, T]`. -/
 theorem isParaRelaxedSub_one : IsParaRelaxedSub P.U₁ P.Qsub₁ (Ioc (2 * P.μ) T) P.u₁ P.E₁ := by
   have h := P.isParaRelaxedSub_hat.supConv P.continuousOn_uhat P.convStep_one P.zero_mem_K
     (fun _ hk ↦ P.norm_fst_le_of_mem_K hk) (P.lipschitzOnWith_smul_Q P.one_add_δ_pos.le)
   convert h using 1
-  funext x
-  simp only [Qsub₁, Pi.smul_apply, smul_eq_mul, NNReal.coe_mul]
-  change _ = _ - (1 + P.δ) * _ * _
-  ring
+  · funext x
+    simp only [Qsub₁, Pi.smul_apply, smul_eq_mul, NNReal.coe_mul, NNReal.coe_mk]
+    ring
+  all_goals rfl
 
 /-- `v₁` is a supersolution for `Q₁⁺` on `U₁ × (2μ, T]`. -/
 theorem isParaSuper_one : IsParaSuper P.U₁ P.Qsuper₁ (Ioc (2 * P.μ) T) P.v₁ := by
   have h := P.isParaSuper_hat.infConv P.continuousOn_vhat P.convStep_one P.zero_mem_K
     (fun _ hk ↦ P.norm_fst_le_of_mem_K hk) (P.lipschitzOnWith_smul_Q P.one_sub_δ_pos.le)
   convert h using 1
-  funext x
-  simp only [Qsuper₁, Pi.smul_apply, smul_eq_mul, NNReal.coe_mul]
-  change _ = _ + (1 - P.δ) * _ * _
-  ring
+  · funext x
+    simp only [Qsuper₁, Pi.smul_apply, smul_eq_mul, NNReal.coe_mul, NNReal.coe_mk]
+    ring
+  all_goals rfl
 
 /-! ### (c) Composition -/
 
@@ -577,11 +577,13 @@ theorem interiorRegion_subset_D₁ : interiorRegion U T P.ρ₀ ⊆ P.D₁ := by
 
 /-- `D₁ ⊆ D₀`. -/
 theorem D₁_subset_D₀ : P.D₁ ⊆ P.D₀ := fun p hp ↦ by
-  simpa using P.convStep_zero_one.closedDomain_add p hp 0 P.zero_mem_B
+  have := P.convStep_zero_one.closedDomain_add p hp 0 P.zero_mem_B
+  rwa [add_zero] at this
 
 /-- `D₀ ⊆ D`. -/
 theorem D₀_subset_D : P.D₀ ⊆ P.D := fun p hp ↦ by
-  simpa using P.convStep_zero.closedDomain_add p hp 0 P.zero_mem_K₀
+  have := P.convStep_zero.closedDomain_add p hp 0 P.zero_mem_K₀
+  rwa [add_zero] at this
 
 /-! ### (e) Continuity, nonnegativity, closedness, positivity sets -/
 

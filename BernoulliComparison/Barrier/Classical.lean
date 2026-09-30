@@ -58,7 +58,7 @@ theorem posSetP_const_smul_of_pos {u : E d × ℝ → ℝ} {Ω : Set (E d × ℝ
     posSetP (c • u) Ω = posSetP u Ω := by
   unfold posSetP
   ext p
-  simp only [Set.mem_setOf_eq, Pi.smul_apply, smul_eq_mul]
+  simp only [Set.mem_ofPred_eq, Pi.smul_apply, smul_eq_mul]
   exact and_congr_right' (mul_pos_iff_of_pos_left hc)
 
 /-- `Prec` is invariant under scaling both functions by the same positive constant. -/

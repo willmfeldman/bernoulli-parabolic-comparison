@@ -96,20 +96,22 @@ lake exe cache get
 lake build
 ```
 
-The Mathlib cache covers Mathlib only. The other dependencies below are
-compiled from source on the first build.
+`lake exe cache get` fetches the Mathlib cache. The other dependencies below
+publish prebuilt release archives, which `lake build` downloads on the first
+build.
 
 ## Dependencies
 
-- [Mathlib](https://github.com/leanprover-community/mathlib4) `v4.30.0`.
+- [Mathlib](https://github.com/leanprover-community/mathlib4) `v4.34.1`.
 - [parabolic-basic-theory](https://github.com/willmfeldman/parabolic-basic-theory)
-  [`v0.1.0`](https://github.com/willmfeldman/parabolic-basic-theory/releases/tag/v0.1.0)
+  [`v0.2.0`](https://github.com/willmfeldman/parabolic-basic-theory/releases/tag/v0.2.0)
   (library `ParabolicBasic`). It supplies the classical solvability of the heat
   Dirichlet problem on ball cylinders (`ParabolicBasic.caloric_dirichlet_ball`),
   used in step 3; see `BernoulliComparison/Heat/Dirichlet.lean`.
 - [viscosity-solution-theory](https://github.com/willmfeldman/viscosity-solution-theory)
-  `v0.2.0` and
-  [aleksandrov-differentiability](https://github.com/willmfeldman/aleksandrov-differentiability),
+  `v0.3.0` and
+  [aleksandrov-differentiability](https://github.com/willmfeldman/aleksandrov-differentiability)
+  `v0.3.0`,
   dependencies of `ParabolicBasic`.
 
 ## Formalization metadata

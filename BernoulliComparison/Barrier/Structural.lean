@@ -129,7 +129,7 @@ theorem IsParaRelaxedSub.translate {U : Set (E d)} {Q : E d → ℝ} {I : Set �
       hVab.translate (-k) (by
         intro q hq
         obtain ⟨p, hp, rfl⟩ := hq
-        simpa using hmapsTo p hp)
+        simpa [sub_eq_add_neg] using hmapsTo p hp)
     set c : E d × ℝ := -k with hc
     have hψ : IsClassicalStrictParaSuper Q (fun q ↦ φ (q - c)) ((· + c.1) '' V) (a + c.2)
         (b + c.2) :=
@@ -171,7 +171,7 @@ theorem IsParaSuper.translate {U : Set (E d)} {Q : E d → ℝ} {I : Set ℝ} {u
       hVab.translate (-k) (by
         intro q hq
         obtain ⟨p, hp, rfl⟩ := hq
-        simpa using hmapsTo p hp)
+        simpa [sub_eq_add_neg] using hmapsTo p hp)
     set c : E d × ℝ := -k with hc
     have hψ : IsClassicalStrictParaSub Q (fun q ↦ φ (q - c)) ((· + c.1) '' V) (a + c.2)
         (b + c.2) :=
@@ -194,7 +194,7 @@ theorem IsParaSuper.translate {U : Set (E d)} {Q : E d → ℝ} {I : Set ℝ} {u
       refine ⟨?_, ?_⟩
       · rw [hcl]; exact ⟨q, hqE, rfl⟩
       · rw [← image_add_cyl]; exact ⟨q, hq, rfl⟩
-    simpa [hc] using hcyl (q + c) hmem
+    simpa [hc, sub_eq_add_neg] using hcyl (q + c) hmem
 
 /-! ### Restriction to a smaller domain -/
 

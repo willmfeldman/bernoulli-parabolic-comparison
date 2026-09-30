@@ -122,8 +122,8 @@ theorem not_mem_of_mem_topDisk {q : E d × ℝ} (hq : q ∈ topDisk C) : q ∉ E
     linarith
   have h2' := abs_lt.1 h2
   refine not_mem_of_mem_sausage C (mem_sausage_of_le C hr1 ?_ ?_) hrE
-  · change 0 < C.tstar - r.2; linarith
-  · change C.tstar - r.2 < 2 * P.μ; linarith [P.μ_pos]
+  · linarith
+  · linarith [P.μ_pos]
 
 /-- `û = 0` on `𝒟̄ = B̄_{λ₁}(x⋆) × {t⋆}` (by continuity from `𝒮`). -/
 theorem uhat_eq_zero_of_norm_le {x : E d} (hx : ‖x - C.xstar‖ ≤ P.ℓ) :

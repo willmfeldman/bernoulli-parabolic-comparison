@@ -117,7 +117,7 @@ theorem exists_isMaxOn_penalized (hΩo : IsOpen Ω) (hΩb : Bornology.IsBounded 
       have h2 := penalty_pos (d := d) hpT
       nlinarith
     have : p ∈ closure Ω \ frontier Ω := ⟨hpK.1, hnf⟩
-    rwa [closure_diff_frontier, hΩo.interior_eq] at this
+    rwa [closure_sdiff_frontier, hΩo.interior_eq] at this
   refine ⟨p, hpΩ, hppos, fun q hq ↦ ?_⟩
   by_cases hqK : q.2 ≤ T₁ - δ
   · exact hpmax ⟨subset_closure hq, hqK⟩

@@ -68,6 +68,7 @@ theorem hasDerivAt_slopeProfile (s : ℝ) :
     HasDerivAt (slopeProfile β A) (β + 2 * A * s) s := by
   have := ((hasDerivAt_id s).const_mul β).add ((hasDerivAt_pow 2 s).const_mul A)
   convert this using 1
+  · rfl
   simp; ring
 
 theorem deriv_slopeProfile : deriv (slopeProfile β A) = fun s ↦ β + 2 * A * s :=

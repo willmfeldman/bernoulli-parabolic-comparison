@@ -6,18 +6,27 @@ description: >
   d{u > 0}, on U x (0, T] with U bounded and open and Q Lipschitz and
   positive: a supersolution and a relaxed subsolution that are strictly
   ordered near the parabolic boundary stay strictly ordered.
-lean_toolchain: leanprover/lean4:v4.30.0
-mathlib: v4.30.0
+lean_toolchain: leanprover/lean4:v4.34.1
+mathlib: v4.34.1
 dependencies:
   - name: parabolic_basic_theory
     url: https://github.com/willmfeldman/parabolic-basic-theory
-    rev: v0.1.0  # 35be935ced4a87143ee33f1e718d3ba0951cb7c8
+    rev: v0.2.0
+    commit: 39e1ebf0dcef3a6f61911077cc193492175c1587
+  # viscosity_solns and AleksandrovDifferentiability come in through parabolic_basic_theory.
   - name: viscosity_solns
     url: https://github.com/willmfeldman/viscosity-solution-theory
-    rev: v0.2.0  # 3a9310934abe88875ed27fc6343ec1423f2850bc (via parabolic_basic_theory)
+    rev: v0.3.0
+    commit: 067e2540ad1594408c0b6145c5bde01b4d5791a9
   - name: AleksandrovDifferentiability
     url: https://github.com/willmfeldman/aleksandrov-differentiability
-    rev: v0.2.0  # 730e7e9256c7e8018abad3bbc50a0598c656b61c (via parabolic_basic_theory)
+    rev: v0.3.0
+    commit: 6b318246f170ac472de4728e22f95a2adae420a5
+# Comparator tool revisions pinned in scripts/release-comparator.sh.
+comparator:
+  comparator_revision: 575674928e239f5bc452aab72d1dd7b0f1326494
+  lean4export_revision: 076e8e57707e813375e8f9da8bf989799ace9680
+  landrun_revision: 811cfff51ceaf3d9843708aa6d22e9b84ccac8b4
 permitted_axioms: [propext, Quot.sound, Classical.choice]
 automation:
   methods:

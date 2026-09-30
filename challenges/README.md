@@ -67,17 +67,17 @@ statement uses it. Every file still imports `Mathlib` only.
 
 ## Toolchain
 
-- Lean: `leanprover/lean4:v4.30.0`
-- Mathlib: `v4.30.0`
-- parabolic-basic-theory (`parabolic_basic_theory`, `v0.1.0`) and its
-  dependencies viscosity-solution-theory (`viscosity_solns`) and
-  AleksandrovDifferentiability: pinned through the parent
+- Lean: `leanprover/lean4:v4.34.1`
+- Mathlib: `v4.34.1`
+- parabolic-basic-theory (`parabolic_basic_theory`, `v0.2.0`) and its
+  dependencies viscosity-solution-theory (`viscosity_solns`, `v0.3.0`) and
+  AleksandrovDifferentiability (`v0.3.0`): pinned through the parent
   `lake-manifest.json`. The comparison proof uses the classical solvability
   of the heat Dirichlet problem on ball cylinders from parabolic-basic-theory,
   so a comparator run on these challenges also transitively audits those
   projects.
 - Comparator: `leanprover/comparator`, with a `lean4export` build matching Lean
-  `v4.30.0` and the pinned `landrun` revision (see
+  `v4.34.1` and the pinned `landrun` revision (see
   `scripts/release-comparator.sh`); the release workflow runs on a standard
   GitHub-hosted Linux runner.
 
@@ -124,10 +124,10 @@ potentially adversarial. Review and trust the release checkout's
 
 ### Recorded acceptance
 
-The release Comparator workflow accepted all four workspaces on 2026-09-27,
-on a standard GitHub-hosted Linux runner, with Lean `v4.30.0`, Mathlib
-`c5ea003`, Comparator `d03acab`, `landrun` `5ed4a3d`, and `lean4export`
-`a3e35a5`, on a release candidate with the same Lean sources as this
+The release Comparator workflow accepted all four workspaces on 2026-09-30,
+on a standard GitHub-hosted Linux runner, with Lean `v4.34.1`, Mathlib
+`d13f23b`, Comparator `5756749`, `landrun` `811cfff`, and `lean4export`
+`076e8e5`, on a release candidate with the same Lean sources as this
 release:
 
 | Workspace | Statement comparison and kernel check | Axioms |

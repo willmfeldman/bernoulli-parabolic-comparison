@@ -110,7 +110,7 @@ theorem norm_gradₓ_const_smul (h : DifferentiableAt ℝ (fun y : E d ↦ φ (y
 theorem posSet_const_smul_of_pos {c : ℝ} (hc : 0 < c) :
     {q : E d × ℝ | 0 < (c • φ) q} = {q | 0 < φ q} := by
   ext q
-  simp only [smul_apply_eq, Set.mem_setOf_eq]
+  simp only [smul_apply_eq, Set.mem_ofPred_eq]
   rw [mul_pos_iff_of_pos_left hc]
 
 end Smul
@@ -174,7 +174,7 @@ theorem lapₓ_comp_sub : lapₓ (fun q ↦ φ (q - k)) p = lapₓ φ (p - k) :=
 theorem posSet_comp_sub_eq :
     {q : E d × ℝ | 0 < φ (q - k)} = (fun q ↦ q + k) '' {q | 0 < φ q} := by
   ext q
-  simp only [Set.mem_setOf_eq, Set.mem_image]
+  simp only [Set.mem_ofPred_eq, Set.mem_image]
   constructor
   · intro h; exact ⟨q - k, h, sub_add_cancel q k⟩
   · rintro ⟨q', hq', rfl⟩

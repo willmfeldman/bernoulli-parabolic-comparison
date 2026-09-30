@@ -80,7 +80,6 @@ theorem IsParaRelaxedSub.touching_alt_of_isTestFunAt (hsub : IsParaRelaxedSub U 
     (P := fun φ ↦ dₜ φ p - lapₓ φ p ≤ 0 ∨ (φ p = 0 ∧ Q p.1 ≤ ‖gradₓ φ p‖)) ?_).2
     (fun ψ hψ hc ↦ hsub.touching_alt hU hpU hpI hQ hψ hc) φ hφ hcross
   intro _ _ h
-  beta_reduce
   rw [dₜ_congr_of_eventuallyEq h, lapₓ_congr_of_eventuallyEq h,
       gradₓ_congr_of_eventuallyEq h, h.eq_of_nhds]
   exact id
@@ -117,7 +116,6 @@ theorem IsParaSuper.touching_alt_of_isTestFunAt (hsup : IsParaSuper U Q I v) (hU
     (P := fun φ ↦ 0 ≤ dₜ φ p - lapₓ φ p ∨ (φ p = 0 ∧ ‖gradₓ φ p‖ ≤ Q p.1)) ?_).2
     (fun ψ hψ hc ↦ hsup.touching_alt hU hpI hQ hψ hc) φ hφ hcross
   intro _ _ h
-  beta_reduce
   rw [dₜ_congr_of_eventuallyEq h, lapₓ_congr_of_eventuallyEq h,
       gradₓ_congr_of_eventuallyEq h, h.eq_of_nhds]
   exact id

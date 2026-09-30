@@ -167,7 +167,7 @@ theorem continuousOn_polarInner (hA8 : A < 8) :
     (continuous_const.mul continuous_snd.sqrt).sub continuous_fst
   have hP : Continuous fun p : ℝ × ℝ ↦ A * √p.2 - p.1 + √p.2 := hw.add continuous_snd.sqrt
   intro p hp
-  simp only [mem_setOf_eq] at hp
+  simp only [mem_ofPred_eq] at hp
   rcases (show 0 ≤ A * √p.2 - p.1 + √p.2 by positivity [sub_nonneg.2 hp]).eq_or_lt with h0 | hpos
   · -- the vertex: squeeze
     have hw0 : A * √p.2 - p.1 = 0 := by
@@ -212,6 +212,7 @@ theorem hasDerivAt_polarOuter_y (hP : y - A * √s + √s ≠ 0) :
   have hz : HasDerivAt (fun y ↦ y - A * √s) 1 y := (hasDerivAt_id y).sub_const _
   have := hasDerivAt_mul_rpow (θ := A / 8) hz (hz.add_const √s) hP
   convert this using 1
+  · rfl
   simp only [polarOuterDy]
   ring
 
@@ -234,6 +235,7 @@ theorem hasDerivAt_polarOuter_s (hs : 0 < s) (hP : y - A * √s + √s ≠ 0) :
     (hω.const_mul A).const_sub y
   have := hasDerivAt_mul_rpow (θ := A / 8) (g := fun s ↦ y - A * √s + √s) hz (hz.add hω) hP
   convert this using 1
+  · rfl
   have hω0 : √s ≠ 0 := (Real.sqrt_pos.2 hs).ne'
   simp only [polarOuterDs]
   field_simp
@@ -245,6 +247,7 @@ theorem hasDerivAt_polarInner_y (hP : A * √s - y + √s ≠ 0) :
     simpa using (hasDerivAt_id y).const_sub (A * √s)
   have := hasDerivAt_mul_rpow (θ := -(A / 8)) hw (hw.add_const √s) hP
   convert this using 1
+  · rfl
   simp only [polarInnerDy]
   ring
 
@@ -269,6 +272,7 @@ theorem hasDerivAt_polarInner_s (hs : 0 < s) (hP : A * √s - y + √s ≠ 0) :
   have := hasDerivAt_mul_rpow (θ := -(A / 8)) (g := fun s ↦ A * √s - y + √s) hw (hw.add hω)
     hP
   convert this using 1
+  · rfl
   have hω0 : √s ≠ 0 := (Real.sqrt_pos.2 hs).ne'
   simp only [polarInnerDs]
   field_simp
