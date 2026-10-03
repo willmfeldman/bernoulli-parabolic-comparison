@@ -1,4 +1,8 @@
-import BernoulliComparison
+module
+
+public import BernoulliComparison
+
+@[expose] public section
 
 /-!
 # Solution: barrier solutions are viscosity solutions of the heat equation

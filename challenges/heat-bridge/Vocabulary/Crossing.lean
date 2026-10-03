@@ -1,9 +1,13 @@
-import Challenge.Parabolic
+module
+
+public import Vocabulary.Parabolic
+
+@[expose] public section
 
 /-!
 # Challenge vocabulary: viscosity sub- and supersolutions of the heat equation
 
-Part of the trusted statement surface; imports `Mathlib` only (through `Challenge.Parabolic`).
+Part of the trusted statement surface; imports `Mathlib` only (through `Vocabulary.Parabolic`).
 Restates, token for token, definitions of the library file
 `BernoulliComparison/Touching/Crossing.lean`.
 

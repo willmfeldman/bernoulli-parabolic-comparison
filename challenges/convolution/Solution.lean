@@ -1,4 +1,8 @@
-import BernoulliComparison
+module
+
+public import BernoulliComparison
+
+@[expose] public section
 
 /-!
 # Solution: sup- and inf-convolution preserve the solution classes

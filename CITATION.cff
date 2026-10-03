@@ -7,7 +7,7 @@ authors:
     given-names: William M.
 repository-code: "https://github.com/willmfeldman/bernoulli-parabolic-comparison"
 license: Apache-2.0
-version: 0.2.0
+version: 0.3.0
 abstract: >-
   A Lean 4 formalization of the comparison principle between supersolutions and
   relaxed subsolutions of the parabolic Bernoulli (one-phase free boundary)

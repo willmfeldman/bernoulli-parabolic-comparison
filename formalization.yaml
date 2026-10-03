@@ -6,26 +6,26 @@ description: >
   d{u > 0}, on U x (0, T] with U bounded and open and Q Lipschitz and
   positive: a supersolution and a relaxed subsolution that are strictly
   ordered near the parabolic boundary stay strictly ordered.
-lean_toolchain: leanprover/lean4:v4.34.1
-mathlib: v4.34.1
+lean_toolchain: leanprover/lean4:v4.35.0-rc3
+mathlib: v4.35.0-rc3
 dependencies:
   - name: parabolic_basic_theory
     url: https://github.com/willmfeldman/parabolic-basic-theory
-    rev: v0.2.0
-    commit: 39e1ebf0dcef3a6f61911077cc193492175c1587
+    rev: v0.3.0
+    commit: 1f685e27f2c8882b3f7bf3122436068a0c7f2584
   # viscosity_solns and AleksandrovDifferentiability come in through parabolic_basic_theory.
   - name: viscosity_solns
     url: https://github.com/willmfeldman/viscosity-solution-theory
-    rev: v0.3.0
-    commit: 067e2540ad1594408c0b6145c5bde01b4d5791a9
+    rev: v0.4.0
+    commit: b9dc82d59e19c5689b6669b41e0c59168c1cdc84
   - name: AleksandrovDifferentiability
     url: https://github.com/willmfeldman/aleksandrov-differentiability
-    rev: v0.3.0
-    commit: 6b318246f170ac472de4728e22f95a2adae420a5
+    rev: v0.4.0
+    commit: 5e5c2ec4cee4f8851387e9bb309eeb703cd72a25
 # Comparator tool revisions pinned in scripts/release-comparator.sh.
 comparator:
-  comparator_revision: 575674928e239f5bc452aab72d1dd7b0f1326494
-  lean4export_revision: 076e8e57707e813375e8f9da8bf989799ace9680
+  comparator_revision: fd5d5bcf14177b187f66d4502071268d877887c3
+  lean4export_revision: 66f1fb4bc256072069767fce52d39480e4524869
   landrun_revision: 811cfff51ceaf3d9843708aa6d22e9b84ccac8b4
 permitted_axioms: [propext, Quot.sound, Classical.choice]
 automation:
@@ -60,6 +60,7 @@ targets:
     challenge_theorems:
       - BernoulliComparison.challenge_relaxed_comparison
       - BernoulliComparison.challenge_strict_comparison
+      - BernoulliComparison.challenge_model_sanity
   - id: strict-comparison
     kind: headline-theorem
     expected_axioms: [propext, Quot.sound, Classical.choice]
@@ -73,7 +74,9 @@ targets:
       The same statement for a standard subsolution u, with the ordering
       u < v taken on the closure of {u > 0}. It follows from relaxed-comparison
       in a few lines, so it adds little independent coverage; its challenge
-      theorem is in the same workspace as the relaxed form.
+      theorem is in the same workspace as the relaxed form, together with a
+      non-vacuity and sign-convention check of the solution classes
+      (challenge_model_sanity).
   - id: convolution
     kind: technical-input
     expected_axioms: [propext, Quot.sound, Classical.choice]
@@ -134,9 +137,3 @@ targets:
       or a polar normal, and both are excluded. The hypotheses are a packaged
       structure, discharged inside para_relaxed_comparison, so this target
       has no challenge of its own; it is checked for name and axioms only.
-supplemental_challenges:
-  - id: model-sanity
-    title: Non-vacuity and sign-convention model cases
-    challenge: challenges/model-sanity
-    challenge_theorems:
-      - BernoulliComparison.challenge_model_sanity

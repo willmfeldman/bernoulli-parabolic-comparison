@@ -1,13 +1,22 @@
-import Challenge.Parabolic
-import Challenge.Crossing
+module
+
+-- challenge-prep: split vocabulary (aux proofs are shared only within a file, so the vocabulary
+-- follows the library's files)
+-- One module per restated library file. Lean reuses an auxiliary `_proof_k` constant only within a
+-- file, so merging the files would rename the auxiliary proofs that the library mints per module and
+-- the values would no longer match (`scripts/check-challenge-definitions.lean`).
+public import Vocabulary.Parabolic
+public import Vocabulary.Crossing
+
+@[expose] public section
 
 /-!
 # Challenge: barrier solutions are viscosity solutions of the heat equation
 
 The solution classes of the parabolic Bernoulli problem are defined by comparison with smooth
-strict barriers on cylinders (`Challenge/Parabolic.lean`). This challenge certifies that they
+strict barriers on cylinders (`Vocabulary/Parabolic.lean`). This challenge certifies that they
 satisfy the heat equation in the standard viscosity sense, with `C^∞` test functions touching on
-backward parabolic cylinders (`Challenge/Crossing.lean`). Let `U ⊆ ℝᵈ` be open and let the time
+backward parabolic cylinders (`Vocabulary/Crossing.lean`). Let `U ⊆ ℝᵈ` be open and let the time
 set `I ⊆ ℝ` contain a left neighbourhood of each of its points (e.g. `I = (0, T]`). For any `Q`:
 
 * `challenge_subcaloric`: if `(u, E)` is a relaxed subsolution in `U × I`, then `u` is a

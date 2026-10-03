@@ -102,16 +102,16 @@ build.
 
 ## Dependencies
 
-- [Mathlib](https://github.com/leanprover-community/mathlib4) `v4.34.1`.
+- [Mathlib](https://github.com/leanprover-community/mathlib4) `v4.35.0-rc3`.
 - [parabolic-basic-theory](https://github.com/willmfeldman/parabolic-basic-theory)
-  [`v0.2.0`](https://github.com/willmfeldman/parabolic-basic-theory/releases/tag/v0.2.0)
+  [`v0.3.0`](https://github.com/willmfeldman/parabolic-basic-theory/releases/tag/v0.3.0)
   (library `ParabolicBasic`). It supplies the classical solvability of the heat
   Dirichlet problem on ball cylinders (`ParabolicBasic.caloric_dirichlet_ball`),
   used in step 3; see `BernoulliComparison/Heat/Dirichlet.lean`.
 - [viscosity-solution-theory](https://github.com/willmfeldman/viscosity-solution-theory)
-  `v0.3.0` and
+  `v0.4.0` and
   [aleksandrov-differentiability](https://github.com/willmfeldman/aleksandrov-differentiability)
-  `v0.3.0`,
+  `v0.4.0`,
   dependencies of `ParabolicBasic`.
 
 ## Formalization metadata
@@ -120,8 +120,9 @@ build.
 their informal statements and expected axioms, and the comparator challenges.
 The directory [challenges/](challenges/) contains standalone
 [Comparator](https://github.com/leanprover/comparator) workspaces. Each
-`Challenge.lean` restates a theorem and all of its vocabulary using Mathlib
-only, and each `Solution.lean` proves it from the library. See
+`Challenge.lean` states theorems over a vocabulary that restates the library's
+definitions using Mathlib only (in `Vocabulary` modules), and each
+`Solution.lean` proves them from the library. See
 [challenges/README.md](challenges/README.md) for the challenge set, its scope,
 and the verification procedure.
 
@@ -163,5 +164,8 @@ and the verification procedure.
 The project is released under the [Apache License 2.0](LICENSE). If you use
 this work, please cite it using [CITATION.cff](CITATION.cff).
 
-The Lean code was developed with AI coding agents under human direction and
-review; see `automation` in [formalization.yaml](formalization.yaml).
+The Lean proofs were written by AI coding agents (Claude, by Anthropic) under
+the author's mathematical direction and review. The theorem statements and
+proof routes were reviewed by the author. Correctness rests on Lean's kernel
+check, together with the comparator challenges in `challenges/`. See
+`automation` in [formalization.yaml](formalization.yaml).

@@ -38,6 +38,9 @@ challenged.each do |entry|
   config = JSON.parse(File.read(config_path))
   expected = entry.fetch('challenge_theorems')
   failures << "#{path}: missing Challenge.lean" unless File.file?(File.join(path, 'Challenge.lean'))
+  # v1.4 layout: the vocabulary lives in Vocabulary modules (import rules: challenge-prep.py check).
+  failures << "#{path}: missing Vocabulary.lean" unless File.file?(File.join(path, 'Vocabulary.lean'))
+  failures << "#{path}: Challenge/ directory is the old layout; use Vocabulary modules" if File.directory?(File.join(path, 'Challenge'))
   failures << "#{path}: missing Solution.lean" unless File.file?(File.join(path, 'Solution.lean'))
   failures << "#{path}: missing lakefile.toml" unless File.file?(File.join(path, 'lakefile.toml'))
   failures << "#{path}: challenge_theorems must be a nonempty list" unless expected.is_a?(Array) && !expected.empty?

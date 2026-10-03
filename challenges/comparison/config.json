@@ -3,7 +3,8 @@
   "solution_module": "Solution",
   "theorem_names": [
     "BernoulliComparison.challenge_relaxed_comparison",
-    "BernoulliComparison.challenge_strict_comparison"
+    "BernoulliComparison.challenge_strict_comparison",
+    "BernoulliComparison.challenge_model_sanity"
   ],
   "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
   "enable_nanoda": false

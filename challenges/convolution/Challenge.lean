@@ -1,5 +1,14 @@
-import Challenge.Parabolic
-import Challenge.Convolution
+module
+
+-- challenge-prep: split vocabulary (aux proofs are shared only within a file, so the vocabulary
+-- follows the library's files)
+-- One module per restated library file. Lean reuses an auxiliary `_proof_k` constant only within a
+-- file, so merging the files would rename the auxiliary proofs that the library mints per module and
+-- the values would no longer match (`scripts/check-challenge-definitions.lean`).
+public import Vocabulary.Parabolic
+public import Vocabulary.Convolution
+
+@[expose] public section
 
 /-!
 # Challenge: sup- and inf-convolution preserve the solution classes
@@ -22,8 +31,8 @@ by at most `L‖k.1‖ ≤ Lℓ`.
 
 All hypotheses are stated individually; the library bundles the kernel and translation
 conditions into a structure `ConvStep`, which the solution assembles from them. The vocabulary
-is restated in `Challenge/Setting.lean`, `Challenge/Parabolic.lean` and
-`Challenge/Convolution.lean`, which import `Mathlib` only.
+is restated in `Vocabulary/Setting.lean`, `Vocabulary/Parabolic.lean` and
+`Vocabulary/Convolution.lean`, which import `Mathlib` only.
 -/
 
 open Set Filter Topology

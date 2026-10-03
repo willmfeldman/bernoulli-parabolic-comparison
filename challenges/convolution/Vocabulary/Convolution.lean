@@ -1,9 +1,13 @@
-import Challenge.Setting
+module
+
+public import Vocabulary.Setting
+
+@[expose] public section
 
 /-!
 # Challenge vocabulary: sup- and inf-convolutions over a kernel
 
-Part of the trusted statement surface; imports `Mathlib` only (through `Challenge.Setting`).
+Part of the trusted statement surface; imports `Mathlib` only (through `Vocabulary.Setting`).
 Restates, token for token, definitions of the library file
 `BernoulliComparison/Convolution/Basic.lean`.
 

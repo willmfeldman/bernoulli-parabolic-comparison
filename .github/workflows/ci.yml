@@ -137,6 +137,7 @@ jobs:
           find BernoulliComparison -type f -name '*.lean' -exec wc -l {} + | \
             awk '$2 != "total" && $1 >= 1000 { print; bad = 1 } END { exit bad }'
           test "$(wc -l < BernoulliComparison.lean)" -lt 1000
+      # The library only; `challenge-prep.py check` below covers every tracked `.lean` file.
       - name: Check every library file is a Lean module
         shell: python3 {0}
         run: |
@@ -155,11 +156,13 @@ jobs:
       - name: Check challenge solutions for sorry, axioms, and native_decide
         run: |
           ! grep -nE '\bsorry\b|^axiom |\badmit\b|native_decide' challenges/*/Solution.lean
-      # Elaboration shows each Challenge and Solution compiles against this
-      # commit's library.  It is not a statement comparison; that is the
-      # release Comparator workflow's job.
-      - name: Elaborate challenge workspaces (Challenge and Solution)
+      # Elaboration shows each Vocabulary, Challenge and Solution compiles
+      # against this commit's library.  It is not a statement comparison; that
+      # is the release Comparator workflow's job.
+      - name: Elaborate challenge workspaces (Vocabulary, Challenge and Solution)
         run: scripts/build-challenges.sh --trusted-all
+      - name: Check module headers and challenge vocabulary blocks
+        run: python3 scripts/challenge-prep.py check
       - name: Save Lake artifacts
         uses: actions/cache/save@v6
         if: always()

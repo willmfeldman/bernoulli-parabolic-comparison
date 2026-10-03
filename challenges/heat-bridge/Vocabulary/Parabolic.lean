@@ -1,9 +1,13 @@
-import Challenge.Setting
+module
+
+public import Vocabulary.Setting
+
+@[expose] public section
 
 /-!
 # Challenge vocabulary: barrier (comparison) solutions of the parabolic Bernoulli problem
 
-Part of the trusted statement surface; imports `Mathlib` only (through `Challenge.Setting`).
+Part of the trusted statement surface; imports `Mathlib` only (through `Vocabulary.Setting`).
 Restates, token for token, definitions of the library file
 `BernoulliComparison/Interface/Parabolic.lean`.
 

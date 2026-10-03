@@ -1,4 +1,8 @@
-import Mathlib
+module
+
+public import Mathlib
+
+@[expose] public section
 
 /-!
 # Challenge vocabulary: the ambient space, space-time operators, strict ordering on a set

@@ -1,0 +1,110 @@
+# Entry metadata for the `comparison` workspace (format: mathlib-initiative formalization.yaml v0.4).
+# The root formalization.yaml keeps its own schema for the repository's checkers.
+# Keep comments outside block scalars (`>-`); anything inside one becomes public text.
+
+version: v0.4
+
+project:
+  name: "Comparison principle for barrier solutions of the parabolic Bernoulli free boundary problem"
+  description: >-
+    A Lean 4 formalization of the comparison principle for the parabolic
+    Bernoulli (one-phase free boundary) problem: the heat equation u_t = Δu in
+    the positivity set {u > 0} with the free boundary condition |∇u| = Q on
+    ∂{u > 0}, in a cylinder U × (0, T] with U ⊆ ℝᵈ bounded and open and Q
+    Lipschitz on the closure of U and bounded below by a positive constant.
+    Sub- and supersolutions are defined by comparison with smooth classical
+    strict barriers on test cylinders, and the subsolution may be relaxed: a
+    pair (u, E) whose closed set E contains {u > 0}. The first main result
+    states that if (u, E) is a relaxed subsolution and v a supersolution, both
+    continuous up to the parabolic boundary, and u < v on E near the parabolic
+    boundary, then u < v on all of E. The second states the same for a standard
+    subsolution, with E the closure of {u > 0}; it is a short corollary of the
+    first. The proof follows the approach of Kim (2003): a gap in Q, sup- and
+    inf-convolutions, and a first-contact analysis with explicit barriers. A
+    third statement checks that the solution classes are not vacuous and carry
+    the intended sign: explicit strict barriers of both kinds whose free
+    boundaries meet the test cylinder, positive constants as supersolutions,
+    (0, ∅) as a relaxed subsolution, and a positive strict subsolution of the
+    heat equation that is not a supersolution.
+  authors: ["William M. Feldman"]
+  responsible_maintainers: ["William M. Feldman"]
+  license: "Apache-2.0"
+
+classification:
+  arxiv: ["math.AP"]
+  msc2020: ["35R35", "35K05", "35D40", "35B51"]
+
+sources:
+  - title: "A free boundary problem arising in flame propagation"
+    authors: ["Inwon C. Kim"]
+    type: paper
+    id: "doi:10.1016/S0022-0396(02)00195-X"
+    location: "Section 2, Theorem 2.2 (comparison principle)"
+    relationship: adapts
+    note: >-
+      Kim proves comparison for viscosity sub- and supersolutions of the
+      problem with Q ≡ 1 in ℝⁿ × (0, ∞), defined by test-function touching,
+      with strictly separated initial data. This entry states comparison for
+      sub- and supersolutions defined by comparison with classical strict
+      barriers, for relaxed subsolutions, with a Lipschitz positive Q on a
+      bounded domain; the differences are listed under fidelity. The proof
+      follows Kim's structure (convolution over a disk and then a space-time
+      ball, first contact, polar and non-polar normals) and differs in three
+      places: in the non-polar case the strict inequality between the two
+      growth rates comes from a gap in Q instead of Hopf's lemma; the rates are
+      compared along one spatial axis, so the collinearity of the two normals
+      is not needed; and the polar case uses a disk followed by a backward ball
+      as kernels, with a separate barrier argument for each polar case, instead
+      of ellipsoidal kernels and a parabolic rescaling.
+
+related_formalizations: []
+
+automation:
+  methods:
+    - method: agent
+      models: ["Claude Opus"]
+      framework: "Claude Code"
+  notes: >-
+    The Lean proofs were written by AI coding agents (Claude, by Anthropic)
+    under the author's mathematical direction and review. The theorem
+    statements, definitions and proof routes were reviewed by the author;
+    correctness rests on Lean's kernel check and the comparator challenges.
+
+review:
+  status: "author-verified"
+  notes: >-
+    The author reviewed the definitions of the solution classes and the
+    statements of the compared theorems against the mathematical literature,
+    and the proof route against Kim (2003). The proofs are checked by Lean's
+    kernel and by the comparator challenges in the repository.
+
+fidelity:
+  divergences: >-
+    Sub- and supersolutions are defined by comparison with C^∞ classical strict
+    barriers on test cylinders V × (a, b] compactly inside the domain, not by
+    test-function touching as in Kim; the repository shows that the function
+    part of a relaxed subsolution and a supersolution in its positivity set are
+    viscosity solutions of the heat equation in the touching sense, but does
+    not prove that the two notions coincide. The subsolution may be relaxed: a
+    pair (u, E) with E closed and containing {u > 0}, ordered on E. The free
+    boundary coefficient Q is Lipschitz on the closure of U with a positive
+    lower bound, instead of Q ≡ 1. The domain is a bounded open U ⊆ ℝᵈ and a
+    finite time interval (0, T], instead of ℝⁿ × (0, ∞), and u, v are assumed
+    continuous on the closure of U × [0, T]. The hypothesis is strict ordering
+    on a neighbourhood of the parabolic boundary (on E, or on the closure of
+    {u > 0}), instead of Kim's strict separation of the initial data; the
+    conclusion is strict ordering on E in the closed cylinder, instead of
+    u(·, t) ≺ v(·, t) for every t. Kim's initial-trace condition on
+    subsolutions is not part of the definitions.
+
+status:
+  main_results:
+    - declaration: "BernoulliComparison.challenge_relaxed_comparison"
+      file: "challenges/comparison/Challenge.lean"
+      comparator_config: "challenges/comparison/config.json"
+    - declaration: "BernoulliComparison.challenge_strict_comparison"
+      file: "challenges/comparison/Challenge.lean"
+      comparator_config: "challenges/comparison/config.json"
+    - declaration: "BernoulliComparison.challenge_model_sanity"
+      file: "challenges/comparison/Challenge.lean"
+      comparator_config: "challenges/comparison/config.json"
