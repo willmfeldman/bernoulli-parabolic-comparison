@@ -203,10 +203,6 @@ theorem sausage_near {q : E d × ℝ} (hq : q ∈ sausage C) :
   unfold Config.lam
   linarith
 
-theorem mem_O_of_mem_sausage {q : E d × ℝ} (hq : q ∈ sausage C) : q ∈ C.O :=
-  have h := sausage_near C hq
-  mem_O_of_near C h.1 h.2.1 h.2.2.le
-
 theorem mem_D_of_mem_sausage {q : E d × ℝ} (hq : q ∈ sausage C) : q ∈ P.D :=
   have h := sausage_near C hq
   mem_D_of_near C h.1 h.2.1 h.2.2.le
@@ -226,10 +222,6 @@ theorem mem_sausage_of_le {q : E d × ℝ} (hx : ‖q.1 - C.xstar‖ ≤ P.ℓ) 
     (hs : C.tstar - q.2 < 2 * P.μ) : q ∈ sausage C := by
   refine mem_sausage_of_y_le C (a := 0) (by linarith) le_rfl ?_
   nlinarith
-
-/-- The closure of the top disk: `𝒟̄ = B̄_{λ₁}(x⋆) × {t⋆}`. -/
-theorem closure_topDisk : closure (topDisk C) = closedBall C.xstar P.ℓ ×ˢ {C.tstar} := by
-  rw [topDisk, closure_prod_eq, closure_ball _ P.ℓ_pos.ne', closure_singleton]
 
 end Polar
 

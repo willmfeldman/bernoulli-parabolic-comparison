@@ -124,9 +124,6 @@ def polarInnerDomain (A ℓ tstar : ℝ) (xstar : E d) : Set (E d × ℝ) :=
 
 variable {A ℓ tstar : ℝ} {xstar : E d}
 
-theorem polarOuterRadial_apply (q : E d × ℝ) :
-    polarOuterRadial A ℓ tstar xstar q = polarOuter A (‖q.1 - xstar‖ - ℓ) (tstar - q.2) := rfl
-
 theorem polarInnerRadial_apply (q : E d × ℝ) :
     polarInnerRadial A ℓ tstar xstar q = polarInner A (‖q.1 - xstar‖ - ℓ) (tstar - q.2) := rfl
 

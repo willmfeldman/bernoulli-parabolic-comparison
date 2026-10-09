@@ -44,9 +44,6 @@ theorem continuousOn_penalty (T₁ : ℝ) :
     ContinuousOn (penalty (d := d) T₁) {q | q.2 < T₁} :=
   (contDiffOn_penalty T₁).continuousOn
 
-theorem isOpen_setOf_snd_lt (T₁ : ℝ) : IsOpen {q : E d × ℝ | q.2 < T₁} :=
-  isOpen_lt continuous_snd continuous_const
-
 /-- Heat operator of the penalization: `(∂ₜ - Δ) (T₁ - t)⁻¹ = ((T₁ - t) ^ 2)⁻¹` for `t < T₁`. -/
 theorem dₜ_sub_lapₓ_penalty {T₁ : ℝ} {p : E d × ℝ} (hp : p.2 < T₁) :
     dₜ (penalty T₁) p - lapₓ (penalty T₁) p = ((T₁ - p.2) ^ 2)⁻¹ := by

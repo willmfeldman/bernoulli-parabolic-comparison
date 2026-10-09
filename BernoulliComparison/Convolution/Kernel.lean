@@ -105,9 +105,6 @@ theorem isCompact_spDisk (c : E d × ℝ) (r : ℝ) : IsCompact (spDisk c r) := 
     intro h
     exact absurd ((norm_nonneg _).trans h) (not_le.mpr hr)
 
-theorem center_mem_stBall (c : E d × ℝ) (r : ℝ) : c ∈ stBall c r := by
-  simp [mem_stBall, sq_nonneg]
-
 theorem center_mem_spDisk (c : E d × ℝ) {r : ℝ} (hr : 0 ≤ r) : c ∈ spDisk c r := by
   simp [mem_spDisk, hr]
 
@@ -118,9 +115,6 @@ theorem isCompact_backBall (μ : ℝ) : IsCompact (backBall μ : Set (E d × ℝ
 
 theorem zero_mem_backBall (μ : ℝ) : (0 : E d × ℝ) ∈ backBall μ := by
   simp [mem_backBall]
-
-theorem backBall_nonempty (μ : ℝ) : (backBall μ : Set (E d × ℝ)).Nonempty :=
-  ⟨0, zero_mem_backBall μ⟩
 
 /-- Points of `B⁻_μ` have spatial norm at most `μ`. -/
 theorem norm_fst_le_of_mem_backBall {μ : ℝ} (hμ : 0 ≤ μ) {k : E d × ℝ} (hk : k ∈ backBall μ) :
@@ -158,10 +152,6 @@ theorem isCompact_diskBallKernel (ℓ μ : ℝ) : IsCompact (diskBallKernel ℓ 
 theorem zero_mem_diskBallKernel {ℓ : ℝ} (hℓ : 0 ≤ ℓ) (μ : ℝ) :
     (0 : E d × ℝ) ∈ diskBallKernel ℓ μ :=
   ⟨0, zero_mem_spDisk_zero hℓ, 0, zero_mem_backBall μ, add_zero 0⟩
-
-theorem diskBallKernel_nonempty {ℓ : ℝ} (hℓ : 0 ≤ ℓ) (μ : ℝ) :
-    (diskBallKernel ℓ μ : Set (E d × ℝ)).Nonempty :=
-  ⟨0, zero_mem_diskBallKernel hℓ μ⟩
 
 /-- Points of `D̄_{ℓ} ⊕ B⁻_μ` have spatial norm at most `ℓ + μ` (the spatial radius). -/
 theorem norm_fst_le_of_mem_diskBallKernel {ℓ μ : ℝ} (hμ : 0 ≤ μ) {k : E d × ℝ}

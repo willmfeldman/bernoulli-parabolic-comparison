@@ -90,8 +90,6 @@ theorem two_μ_lt : 2 * P.μ < p.2 := h.mem_U₁_Ioc.2.1
 
 theorem le_T : p.2 ≤ T := h.mem_U₁_Ioc.2.2
 
-theorem ρ₀_le : P.ρ₀ ≤ p.2 := h.mem_R₁.2.1
-
 /-- The room at the contact point, from the margin of the convolved pair. -/
 theorem room : closedBall p.1 (2 * P.r₀) ×ˢ Icc (p.2 - 2 * P.r₀) p.2 ⊆
     P.U₁ ×ˢ Ioc (2 * P.μ) T ∧ 2 * P.lam < P.r₀ :=

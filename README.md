@@ -9,7 +9,7 @@ in a cylinder `U × (0, T]`, with `U ⊆ ℝᵈ` bounded and open and `Q` Lipsch
 and bounded below by a positive constant. Sub- and supersolutions are defined
 by comparison with classical strict barriers, and the subsolution may be
 *relaxed*: a pair `(u, E)` whose closed set `E` contains the positivity set
-`{u > 0}`. The approximately 11,900 lines of Lean source are `sorry`-free and
+`{u > 0}`. The approximately 11,700 lines of Lean source are `sorry`-free and
 introduce no axioms: the headline theorems depend only on `propext`,
 `Classical.choice` and `Quot.sound`.
 

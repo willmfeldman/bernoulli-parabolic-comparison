@@ -83,17 +83,6 @@ theorem stNorm_le_two_mul_norm (k : E d × ℝ) : stNorm k ≤ 2 * ‖k‖ := by
   have h2 : |k.2| ≤ ‖k‖ := by rw [← Real.norm_eq_abs]; exact norm_snd_le k
   linarith
 
-theorem norm_fst_le_stNorm (k : E d × ℝ) : ‖k.1‖ ≤ stNorm k := by
-  rw [← sq_le_sq₀ (norm_nonneg _) (stNorm_nonneg k), stNorm_sq]
-  nlinarith [sq_nonneg k.2]
-
-theorem abs_snd_le_stNorm (k : E d × ℝ) : |k.2| ≤ stNorm k := by
-  rw [← sq_le_sq₀ (abs_nonneg _) (stNorm_nonneg k), stNorm_sq, sq_abs]
-  nlinarith [sq_nonneg ‖k.1‖]
-
-theorem continuous_stNorm : Continuous (stNorm : E d × ℝ → ℝ) :=
-  continuous_norm.comp (WithLp.prodContinuousLinearEquiv 2 ℝ (E d) ℝ).symm.continuous
-
 /-! ### Open Euclidean space-time balls -/
 
 /-- The open Euclidean space-time ball `B_r(c)`. -/
@@ -114,9 +103,6 @@ theorem mem_stBall_iff_stNorm {c k : E d × ℝ} {r : ℝ} (hr : 0 ≤ r) :
 theorem mem_stBallOpen_iff_stNorm {c k : E d × ℝ} {r : ℝ} (hr : 0 ≤ r) :
     k ∈ stBallOpen c r ↔ stNorm (k - c) < r := by
   rw [stNorm_lt_iff hr, mem_stBallOpen]; rfl
-
-theorem isOpen_stBallOpen (c : E d × ℝ) (r : ℝ) : IsOpen (stBallOpen c r) :=
-  isOpen_lt (by fun_prop) continuous_const
 
 /-- Points of the closed ball on the segment towards the centre lie in the open ball. -/
 theorem lineMap_mem_stBallOpen {c k : E d × ℝ} {r : ℝ} (hr : 0 < r) (hk : k ∈ stBall c r)

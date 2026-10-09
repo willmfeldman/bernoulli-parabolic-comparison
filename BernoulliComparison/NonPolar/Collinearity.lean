@@ -89,11 +89,6 @@ theorem norm_ν₁_fst_le : ‖C.ν₁.1‖ ≤ 1 := by
   have := C.ν₁_unit
   nlinarith [norm_nonneg C.ν₁.1, sq_nonneg C.ν₁.2]
 
-/-- `ν²ₓ` has norm at most `1`. -/
-theorem norm_ν₂_fst_le : ‖C.ν₂.1‖ ≤ 1 := by
-  have := C.ν₂_unit
-  nlinarith [norm_nonneg C.ν₂.1, sq_nonneg C.ν₂.2]
-
 theorem ctr₁_fst : C.ctr₁.1 = C.xstar + P.μ • C.ν₁.1 := by
   rw [C.ctr₁_eq_pstar_add]; rfl
 
@@ -137,7 +132,6 @@ open Contact Crossing Config
 
 variable {d : ℕ} {U : Set (E d)} {Q : E d → ℝ} {T : ℝ} {u v : E d × ℝ → ℝ}
   {Eset : Set (E d × ℝ)} {P : Config U Q T u v Eset}
-
 
 variable (C : ContactData P)
 
@@ -226,7 +220,6 @@ theorem collinearity (h₁ : C.ν₁.1 ≠ 0) (h₂ : C.ν₂.1 ≠ 0) :
     (sameRay_iff_norm_smul_eq.2 hray)
   rwa [norm_neg, smul_neg] at this
 
-
 /-- Depth transfer. For `z ∈ B̄_μ(p̂)` with `κ(z) < r₀` and every
 unit `e ∈ ℝᵈ`: `v₁(x⋆ + κ(z) e, t⋆) ≤ v₀(z)`.
 
@@ -260,7 +253,6 @@ theorem depth_transfer {z : E d × ℝ} (hz : z ∈ stBall C.phat P.μ) {e : E d
   have := infConv_le P.isCompact_B P.continuousOn_v₀
     (fun k hk ↦ P.convStep_zero_one.closedDomain_add pz hpzD k hk) hB
   rwa [add_sub_cancel] at this
-
 
 /-- The axis points `(x⋆ + k e, t⋆)`, `e = ν¹ₓ/|ν¹ₓ|`, `0 ≤ k ≤ 2μ|ν¹ₓ|`, `k ≤ 2r₀`, lie in
 the interior ball `B̄_μ(p⋆ + μ ν¹)` and in `D₁`, hence in `E₁` (first step of

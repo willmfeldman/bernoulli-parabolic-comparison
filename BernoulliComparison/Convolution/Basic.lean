@@ -246,10 +246,6 @@ theorem inter_subset_setConv {D' K Eset : Set (E d × ℝ)} (h0K : (0 : E d × �
     Eset ∩ D' ⊆ setConv D' K Eset :=
   fun p hp ↦ ⟨hp.2, 0, h0K, by simpa using hp.1⟩
 
-theorem mem_reachSet_of_add_mem {K Eset : Set (E d × ℝ)} {p k : E d × ℝ} (hk : k ∈ K)
-    (hpk : p + k ∈ Eset) : p ∈ reachSet K Eset :=
-  ⟨k, hk, hpk⟩
-
 /-! ### Convolution steps -/
 
 namespace ConvStep

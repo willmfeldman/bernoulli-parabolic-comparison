@@ -305,19 +305,6 @@ theorem sphere_mem_prod {q : E d × ℝ}
     q ∈ closedBall p.1 P.μ ×ˢ Icc (p.2 - 2 * P.μ) p.2 :=
   dualBall_subset_prod P p (mem_stBall_of_sphere hq)
 
-/-- A point of the sphere `|q - p̂| = μ` has `|q - p⋆| ≤ 2μ` (Euclidean). -/
-theorem stNorm_sub_le_of_sphere {q : E d × ℝ}
-    (hq : ‖q.1 - p.1‖ ^ 2 + (q.2 - (p.2 - P.μ)) ^ 2 = P.μ ^ 2) :
-    stNorm (q - p) ≤ 2 * P.μ := by
-  have h1 : stNorm (q - P.dualCentre p) ≤ P.μ :=
-    (mem_stBall_iff_stNorm P.μ_pos.le).1 (mem_stBall_of_sphere hq)
-  have h2 : stNorm (P.dualCentre p - p) = P.μ := by
-    have : P.dualCentre p - p = ((0 : E d), -P.μ) := by ext <;> simp [dualCentre]
-    rw [← sq_eq_sq₀ (stNorm_nonneg _) P.μ_pos.le, stNorm_sq, this]
-    simp
-  have := stNorm_sub_le q (P.dualCentre p) p
-  linarith
-
 include h in
 /-- A point of the sphere `|q - p̂| = μ` lies in `O₀ = (W⋆ ∩ U₀) × (0, T]` (`W⋆ = B_{2λ}(x⋆)`). -/
 theorem sphere_mem_O₀ {q : E d × ℝ}
@@ -331,13 +318,6 @@ theorem sphere_mem_O₀ {q : E d × ℝ}
   have := P.μ_lt_lam
   have := P.lam_pos
   linarith
-
-include h in
-/-- A point of the sphere `|q - p̂| = μ` lies in `O = (W⋆ ∩ U) × (0, T]`. -/
-theorem sphere_mem_O {q : E d × ℝ}
-    (hq : ‖q.1 - p.1‖ ^ 2 + (q.2 - (p.2 - P.μ)) ^ 2 = P.μ ^ 2) : q ∈ P.O p.1 := by
-  have hq' := sphere_mem_O₀ h hq
-  exact ⟨⟨hq'.1.1, P.U₀_subset hq'.1.2⟩, hq'.2⟩
 
 end Contact
 

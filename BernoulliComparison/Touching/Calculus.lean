@@ -42,10 +42,6 @@ theorem contDiff_sliceX {n : WithTop ℕ∞} (hφ : ContDiff ℝ n φ) (t : ℝ)
     ContDiff ℝ n (fun y : E d ↦ φ (y, t)) :=
   hφ.comp (contDiff_id.prodMk contDiff_const)
 
-theorem contDiff_sliceT {n : WithTop ℕ∞} (hφ : ContDiff ℝ n φ) (x : E d) :
-    ContDiff ℝ n (fun s : ℝ ↦ φ (x, s)) :=
-  hφ.comp (contDiff_const.prodMk contDiff_id)
-
 theorem hasFDerivAt_sliceX (hφ : Differentiable ℝ φ) (q : E d × ℝ) :
     HasFDerivAt (fun y : E d ↦ φ (y, q.2))
       ((fderiv ℝ φ q).comp (ContinuousLinearMap.inl ℝ (E d) ℝ)) q.1 :=

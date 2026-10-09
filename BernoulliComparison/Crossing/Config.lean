@@ -322,10 +322,6 @@ theorem isClosed_Eset : IsClosed Eset := P.sub.2.2.1
 
 /-! ### The scaled pair `(û, E)`, `v̂` -/
 
-theorem uhat_apply (p : E d × ℝ) : P.uhat p = (1 + P.δ) * u p := rfl
-
-theorem vhat_apply (p : E d × ℝ) : P.vhat p = (1 - P.δ) * v p := rfl
-
 theorem continuousOn_uhat : ContinuousOn P.uhat P.D := by
   unfold uhat D; exact P.continuousOn_u.const_smul (1 + P.δ)
 
@@ -371,8 +367,6 @@ theorem mem_Eset_of_uhat_pos {p : E d × ℝ} (hp : p ∈ P.D) (hpos : 0 < P.uha
     P.isParaRelaxedSub_hat.2.2.2.2.1 ⟨hp, hpos⟩
 
 /-! ### Kernels -/
-
-theorem K_eq : P.K = P.K₀ + P.B := rfl
 
 theorem isCompact_K₀ : IsCompact P.K₀ := isCompact_spDisk 0 _
 
@@ -580,11 +574,6 @@ theorem D₁_subset_D₀ : P.D₁ ⊆ P.D₀ := fun p hp ↦ by
   have := P.convStep_zero_one.closedDomain_add p hp 0 P.zero_mem_B
   rwa [add_zero] at this
 
-/-- `D₀ ⊆ D`. -/
-theorem D₀_subset_D : P.D₀ ⊆ P.D := fun p hp ↦ by
-  have := P.convStep_zero.closedDomain_add p hp 0 P.zero_mem_K₀
-  rwa [add_zero] at this
-
 /-! ### (e) Continuity, nonnegativity, closedness, positivity sets -/
 
 theorem continuousOn_u₀ : ContinuousOn P.u₀ P.D₀ :=
@@ -615,11 +604,7 @@ theorem isClosed_E₀ : IsClosed P.E₀ := P.convStep_zero.isClosed_setConv P.is
 
 theorem isClosed_E₁ : IsClosed P.E₁ := P.convStep_one.isClosed_setConv P.isClosed_Eset
 
-theorem E₀_subset_D₀ : P.E₀ ⊆ P.D₀ := setConv_subset
-
 theorem E₁_subset_D₁ : P.E₁ ⊆ P.D₁ := setConv_subset
-
-theorem isCompact_D₀ : IsCompact P.D₀ := P.isBounded_U₀.isCompact_closure.prod isCompact_Icc
 
 theorem isCompact_D₁ : IsCompact P.D₁ := P.isBounded_U₁.isCompact_closure.prod isCompact_Icc
 

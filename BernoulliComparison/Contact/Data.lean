@@ -26,14 +26,14 @@ Derived (definitions in the namespace `ContactData`): the dual centre `C.phat = 
 the unit normals `C.ν₁ = (q₁ - p̂)/μ`, `C.ν₂ = (q₂ - p̂)/μ` (Euclidean unit vectors,
 `C.ν₁_unit`; `e_t` is `(0, 1)`), the ball centres `C.ctr₁ = p⋆ + μ ν₁ = q₁ + μ e_t`, `C.ctr₂`
 (named `ctr` to avoid a clash with the constants), the constants `C.c₁ > C.c₂ > 0` of
-`Contact/LocalConstants.lean` at `x⋆`, `C.Wstar = B_{2λ}(x⋆)`, and `C.O`, `C.O₀`, `C.O₁`.
+`Contact/LocalConstants.lean` at `x⋆`, `C.Wstar = B_{2λ}(x⋆)`, and `C.O`, `C.O₀`.
 
 ## Facts
 
 Fields: the first-contact facts (`isFirstContact`), the zero contact values (`u₁_pstar`,
 `v₁_pstar`), the contact structure (i)–(iv), and the dual-ball lemma (inclusions, (a)–(f)).
-Lemmas in the namespace `ContactData`: the touching-class configuration at levels 0, 1 and raw
-(`C.touchSub_zero`, …, `C.isSupercal_hat`), the gap (`C.c₂_pos`, `C.c₂_lt_c₁`), the room, the
+Lemmas in the namespace `ContactData`: the touching classes at level 0 and raw
+(`C.touchSub_zero`, …, `C.touchSuper_hat`), the gap (`C.c₂_pos`, `C.c₂_lt_c₁`), the room, the
 location of `q₁`, `q₂`, and the unit normals.
 
 The level-0 objects and the raw pair are the definitions of the configuration:
@@ -213,28 +213,9 @@ def O : Set (E d × ℝ) := P.O C.xstar
 /-- `O₀ = (W⋆ ∩ U₀) × (0, T]`. -/
 def O₀ : Set (E d × ℝ) := P.O₀ C.xstar
 
-/-- `O₁ = (W⋆ ∩ U₁) × (2μ, T]`. -/
-def O₁ : Set (E d × ℝ) := P.O₁ C.xstar
-
-theorem pstar_eq : C.pstar = (C.xstar, C.tstar) := rfl
-
-theorem phat_eq : C.phat = (C.xstar, C.tstar - P.μ) := rfl
-
 theorem ctr₁_eq : C.ctr₁ = C.q₁ + (0, P.μ) := rfl
 
-theorem ctr₂_eq : C.ctr₂ = C.q₂ + (0, P.μ) := rfl
-
 /-! ### First crossing -/
-
-theorem mem_E₁ : C.pstar ∈ P.E₁ := C.isFirstContact.mem_E₁
-
-theorem mem_D₁ : C.pstar ∈ P.D₁ := C.isFirstContact.mem_D₁
-
-theorem mem_R₁ : C.pstar ∈ P.R₁ := C.isFirstContact.mem_R₁
-
-/-- `p⋆ ∈ Ξ = contactSet t⋆`. -/
-theorem mem_contactSet : C.pstar ∈ P.contactSet C.tstar :=
-  ⟨C.mem_E₁, rfl, C.isFirstContact.u₁_eq_v₁⟩
 
 /-- First crossing: `u₁ < v₁` on `E₁ ∩ {t < t⋆}`. -/
 theorem lt_of_lt : ∀ p ∈ P.E₁, p.2 < C.tstar → P.u₁ p < P.v₁ p := C.isFirstContact.lt_of_lt
@@ -244,22 +225,14 @@ theorem le_of_eq : ∀ p ∈ P.E₁, p.2 = C.tstar → P.u₁ p ≤ P.v₁ p := 
 
 theorem xstar_mem_U₁ : C.xstar ∈ P.U₁ := C.isFirstContact.fst_mem_U₁
 
-theorem xstar_mem_U : C.xstar ∈ U := C.isFirstContact.fst_mem_U
-
 theorem xstar_mem_closure : C.xstar ∈ closure U := C.isFirstContact.fst_mem_closure
 
 /-- `B̄_λ(x⋆) ⊆ U`. -/
 theorem closedBall_lam_subset : closedBall C.xstar P.lam ⊆ U := C.xstar_mem_U₁
 
-theorem ρ₀_le_tstar : P.ρ₀ ≤ C.tstar := C.isFirstContact.ρ₀_le
-
 theorem tstar_le_T : C.tstar ≤ T := C.isFirstContact.le_T
 
 theorem two_μ_lt_tstar : 2 * P.μ < C.tstar := C.isFirstContact.two_μ_lt
-
-/-- `8λ < t⋆` (from (P1) and `ρ₀ ≤ t⋆`). -/
-theorem eight_lam_lt_tstar : 8 * P.lam < C.tstar := by
-  have := P.lam_lt; have := C.ρ₀_le_tstar; linarith
 
 /-- The room at `p⋆` (from the margin of the convolved pair):
 `B̄_{2r₀}(x⋆) × [t⋆ - 2r₀, t⋆] ⊆ U₁ × (2μ, T]` and `2λ < r₀`. -/
@@ -273,16 +246,6 @@ theorem mem_room {q : E d × ℝ} (hx : ‖q.1 - C.xstar‖ ≤ 2 * P.r₀)
   C.isFirstContact.mem_room hx ht1 ht2
 
 /-! ### Normals and centres -/
-
-theorem q₁_mem_stBall : C.q₁ ∈ stBall C.phat P.μ := mem_stBall_of_sphere C.q₁_sphere
-
-theorem q₂_mem_stBall : C.q₂ ∈ stBall C.phat P.μ := mem_stBall_of_sphere C.q₂_sphere
-
-theorem q₁_not_mem_stBallOpen : C.q₁ ∉ stBallOpen C.phat P.μ := fun h ↦
-  C.dual_not_mem_E₀ _ h C.q₁_mem_E₀
-
-theorem q₂_not_mem_stBallOpen : C.q₂ ∉ stBallOpen C.phat P.μ := fun h ↦
-  (C.dual_v₀_pos _ h).ne' C.v₀_q₂
 
 theorem ν_unit_aux {q : E d × ℝ}
     (hq : ‖q.1 - C.pstar.1‖ ^ 2 + (q.2 - (C.pstar.2 - P.μ)) ^ 2 = P.μ ^ 2) :
@@ -339,32 +302,9 @@ theorem ν₂_eq_et_iff : C.ν₂ = ((0 : E d), (1 : ℝ)) ↔ C.q₂ = C.pstar 
 
 /-! ### Location of the touching points -/
 
-theorem q₁_mem_prod : C.q₁ ∈ closedBall C.xstar P.μ ×ˢ Icc (C.tstar - 2 * P.μ) C.tstar :=
-  sphere_mem_prod C.q₁_sphere
-
-theorem q₂_mem_prod : C.q₂ ∈ closedBall C.xstar P.μ ×ˢ Icc (C.tstar - 2 * P.μ) C.tstar :=
-  sphere_mem_prod C.q₂_sphere
-
-/-- `|q₁ - p⋆| ≤ 2μ`. -/
-theorem stNorm_q₁_sub_le : stNorm (C.q₁ - C.pstar) ≤ 2 * P.μ :=
-  stNorm_sub_le_of_sphere C.q₁_sphere
-
-/-- `|q₂ - p⋆| ≤ 2μ`. -/
-theorem stNorm_q₂_sub_le : stNorm (C.q₂ - C.pstar) ≤ 2 * P.μ :=
-  stNorm_sub_le_of_sphere C.q₂_sphere
-
 theorem q₁_mem_O₀ : C.q₁ ∈ C.O₀ := sphere_mem_O₀ C.isFirstContact C.q₁_sphere
 
 theorem q₂_mem_O₀ : C.q₂ ∈ C.O₀ := sphere_mem_O₀ C.isFirstContact C.q₂_sphere
-
-theorem q₁_mem_O : C.q₁ ∈ C.O := sphere_mem_O C.isFirstContact C.q₁_sphere
-
-theorem q₂_mem_O : C.q₂ ∈ C.O := sphere_mem_O C.isFirstContact C.q₂_sphere
-
-theorem q₁_mem_D₀ : C.q₁ ∈ P.D₀ := P.E₀_subset_D₀ C.q₁_mem_E₀
-
-theorem q₂_mem_D₀ : C.q₂ ∈ P.D₀ :=
-  P.prod_Ioc_subset_D₀ (C.prod_subset_U₀_Ioc C.q₂_mem_prod)
 
 /-! ### Local constants and touching data -/
 
@@ -375,12 +315,6 @@ theorem c₂_lt_c₁ : C.c₂ < C.c₁ := P.cSuper_lt_cSub C.xstar_mem_closure
 
 theorem c₁_pos : 0 < C.c₁ := P.cSub_pos C.xstar_mem_closure
 
-theorem isParOpen_O : IsParOpen C.O := P.isParOpen_O _
-
-theorem isParOpen_O₀ : IsParOpen C.O₀ := P.isParOpen_O₀ _
-
-theorem isParOpen_O₁ : IsParOpen C.O₁ := P.isParOpen_O₁ _
-
 /-- Touching configuration (a): `TSub(O₀, E₀, u₀, c₁)`. -/
 theorem touchSub_zero : TouchSub C.O₀ P.E₀ P.u₀ (fun _ ↦ C.c₁) :=
   P.touchSub_zero C.xstar_mem_closure
@@ -389,14 +323,6 @@ theorem touchSub_zero : TouchSub C.O₀ P.E₀ P.u₀ (fun _ ↦ C.c₁) :=
 theorem touchSuper_zero : TouchSuper C.O₀ P.v₀ (fun _ ↦ C.c₂) :=
   P.touchSuper_zero C.xstar_mem_closure
 
-/-- Touching configuration (a): `TSub(O₁, E₁, u₁, c₁)`. -/
-theorem touchSub_one : TouchSub C.O₁ P.E₁ P.u₁ (fun _ ↦ C.c₁) :=
-  P.touchSub_one C.xstar_mem_closure
-
-/-- Touching configuration (a): `TSuper(O₁, v₁, c₂)`. -/
-theorem touchSuper_one : TouchSuper C.O₁ P.v₁ (fun _ ↦ C.c₂) :=
-  P.touchSuper_one C.xstar_mem_closure
-
 /-- Touching configuration (a): `TSub(O, E, û, c₁)` (raw pair). -/
 theorem touchSub_hat : TouchSub C.O Eset P.uhat (fun _ ↦ C.c₁) :=
   P.touchSub_hat C.xstar_mem_closure
@@ -404,25 +330,6 @@ theorem touchSub_hat : TouchSub C.O Eset P.uhat (fun _ ↦ C.c₁) :=
 /-- Touching configuration (a): `TSuper(O, v̂, c₂)` (raw). -/
 theorem touchSuper_hat : TouchSuper C.O P.vhat (fun _ ↦ C.c₂) :=
   P.touchSuper_hat C.xstar_mem_closure
-
-/-- Touching configuration (b): `Subcal(U₀ × (0, T], u₀)`. -/
-theorem isSubcal_zero : IsSubcal (P.U₀ ×ˢ Ioc 0 T) P.u₀ := P.isSubcal_zero
-
-/-- Touching configuration (b): `Subcal(U₁ × (2μ, T], u₁)`. -/
-theorem isSubcal_one : IsSubcal (P.U₁ ×ˢ Ioc (2 * P.μ) T) P.u₁ := P.isSubcal_one
-
-/-- Touching configuration (b): `Subcal(U × (0, T], û)`. -/
-theorem isSubcal_hat : IsSubcal (U ×ˢ Ioc 0 T) P.uhat := P.isSubcal_hat
-
-/-- Touching configuration (b): `Supercal({v₀ > 0} ∩ (U₀ × (0, T]), v₀)`. -/
-theorem isSupercal_zero : IsSupercal (posSetP P.v₀ (P.U₀ ×ˢ Ioc 0 T)) P.v₀ := P.isSupercal_zero
-
-/-- Touching configuration (b): `Supercal({v₁ > 0} ∩ (U₁ × (2μ, T]), v₁)`. -/
-theorem isSupercal_one : IsSupercal (posSetP P.v₁ (P.U₁ ×ˢ Ioc (2 * P.μ) T)) P.v₁ :=
-  P.isSupercal_one
-
-/-- Touching configuration (b): `Supercal({v̂ > 0} ∩ (U × (0, T]), v̂)`. -/
-theorem isSupercal_hat : IsSupercal (posSetP P.vhat (U ×ˢ Ioc 0 T)) P.vhat := P.isSupercal_hat
 
 end ContactData
 

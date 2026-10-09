@@ -169,13 +169,6 @@ theorem axis_rate (h₂ : C.ν₂.1 ≠ 0) {e : E d} (he : ‖e‖ = 1) {δ' : �
     _ ≤ P.v₁ (C.xstar + C.depth q • e, C.tstar) := h1
     _ ≤ P.v₀ q := h2
 
-/-- The axis rate ceiling in the direction `e = -ν²ₓ/|ν²ₓ|` of the exterior spatial normal. -/
-theorem axis_rate_normal (h₂ : C.ν₂.1 ≠ 0) {δ' : ℝ} (hδ' : 0 < δ') {k₀ : ℝ} (hk₀ : 0 < k₀) :
-    ∃ k ∈ Ioc 0 k₀,
-      P.v₁ (C.xstar + k • -(‖C.ν₂.1‖⁻¹ • C.ν₂.1), C.tstar) < (C.c₂ + δ') * k := by
-  refine axis_rate C h₂ ?_ hδ' hk₀
-  rw [norm_neg, norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ (norm_ne_zero_iff.2 h₂)]
-
 end NonPolar
 
 end BernoulliComparison

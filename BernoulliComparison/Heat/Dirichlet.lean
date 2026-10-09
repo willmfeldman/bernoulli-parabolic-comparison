@@ -77,13 +77,13 @@ theorem caloric_dirichlet_ball (x₀ : E d) {ρ : ℝ} (hρ : 0 < ρ) {a b : ℝ
   exact ParabolicBasic.caloric_dirichlet_ball x₀ hρ hab hg
 
 /-! The definitions of `parabolic_basic_theory` occurring in the statement agree with ours by
-`rfl`. -/
-theorem parabolicBasic_E_eq (d : ℕ) : ParabolicBasic.E d = E d := rfl
-theorem parabolicBasic_gradₓ_eq : @ParabolicBasic.gradₓ d = @gradₓ d := rfl
-theorem parabolicBasic_lapₓ_eq : @ParabolicBasic.lapₓ d = @lapₓ d := rfl
-theorem parabolicBasic_dₜ_eq : @ParabolicBasic.dₜ d = @dₜ d := rfl
-theorem parabolicBasic_cyl_eq : @ParabolicBasic.cyl d = @cyl d := rfl
-theorem parabolicBasic_parBdry_eq : @ParabolicBasic.parBdry d = @parBdry d := rfl
+`rfl`. These are checked here as anonymous examples (consistency checks, not API). -/
+example (d : ℕ) : ParabolicBasic.E d = E d := rfl
+example : @ParabolicBasic.gradₓ d = @gradₓ d := rfl
+example : @ParabolicBasic.lapₓ d = @lapₓ d := rfl
+example : @ParabolicBasic.dₜ d = @dₜ d := rfl
+example : @ParabolicBasic.cyl d = @cyl d := rfl
+example : @ParabolicBasic.parBdry d = @parBdry d := rfl
 
 end Heat
 

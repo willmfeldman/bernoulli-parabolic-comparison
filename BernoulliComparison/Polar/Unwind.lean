@@ -15,10 +15,13 @@ The first convolution step is by the flat disk `K₀ = D̄_{λ₁} × {0}`. Unwi
 information about the convolved functions at the contact point to the raw pair `(û, E)` and the
 raw supersolution `v̂` on the sausage `𝒮` and the top disk `𝒟` (`Polar/Sausage.lean`).
 
-* `unwind_u`: the raw pair `(û, E)` has `E ∩ 𝒮 = E ∩ 𝒟 = ∅`, `û = 0` on `𝒮 ∪ 𝒟̄`, and, if
-  `ν¹ = e_t`, a rim witness `w₁ = (x̄, t⋆) ∈ E` with `|x̄ - x⋆| = λ₁`;
-* `unwind_v`: the raw supersolution has `v̂ > 0` on `𝒮 ∪ 𝒟` and, if `ν² = e_t`, a rim zero
-  `p₂ = (x̄, t⋆)`, `v̂(p₂) = 0`, `|x̄ - x⋆| = λ₁`.
+* the raw pair `(û, E)` has `E ∩ 𝒮 = E ∩ 𝒟 = ∅`, `û = 0` on `𝒮 ∪ 𝒟̄`
+  (`not_mem_of_mem_sausage`, `not_mem_of_mem_topDisk`, `uhat_eq_zero_of_mem_sausage`,
+  `uhat_eq_zero_of_norm_le`), and, if `ν¹ = e_t`, a rim witness `w₁ = (x̄, t⋆) ∈ E` with
+  `|x̄ - x⋆| = λ₁` (`exists_rim_mem`);
+* the raw supersolution has `v̂ > 0` on `𝒮 ∪ 𝒟` (`vhat_pos_of_mem_sausage`,
+  `vhat_pos_of_mem_topDisk`) and, if `ν² = e_t`, a rim zero `p₂ = (x̄, t⋆)`, `v̂(p₂) = 0`,
+  `|x̄ - x⋆| = λ₁` (`exists_rim_zero`).
 
 The individual statements about `𝒮` and `𝒟` do not use the polar hypothesis, and are stated
 without it. The rim points are given as `x̄` with `|x̄ - x⋆| = λ₁`.
@@ -156,17 +159,6 @@ theorem exists_rim_mem (h : C.ν₁ = ((0 : E d), (1 : ℝ))) :
   refine le_antisymm hk.1 (not_lt.1 fun hlt ↦ not_mem_of_mem_topDisk C ?_ hkE)
   exact ⟨by rwa [mem_ball, dist_eq_norm, add_sub_cancel_left], rfl⟩
 
-/-- Unwinding for the subsolution, bundled. If `ν¹ = e_t`: (a) `E ∩ 𝒮 = ∅` and `û = 0` on `𝒮`;
-(b) `E ∩ 𝒟 = ∅` and `û = 0` on `𝒟̄`; (c) there is `x̄` with `|x̄ - x⋆| = λ₁` and `(x̄, t⋆) ∈ E`. -/
-theorem unwind_u (h : C.ν₁ = ((0 : E d), (1 : ℝ))) :
-    (∀ q ∈ sausage C, q ∉ Eset ∧ P.uhat q = 0) ∧
-      (∀ q ∈ topDisk C, q ∉ Eset) ∧
-      (∀ x : E d, ‖x - C.xstar‖ ≤ P.ℓ → P.uhat (x, C.tstar) = 0) ∧
-      ∃ xb : E d, ‖xb - C.xstar‖ = P.ℓ ∧ ((xb, C.tstar) : E d × ℝ) ∈ Eset :=
-  ⟨fun _ hq ↦ ⟨not_mem_of_mem_sausage C hq, uhat_eq_zero_of_mem_sausage C hq⟩,
-    fun _ hq ↦ not_mem_of_mem_topDisk C hq, fun _ hx ↦ uhat_eq_zero_of_norm_le C hx,
-    exists_rim_mem C h⟩
-
 /-! ### Unwinding for the supersolution -/
 
 /-- `v̂ > 0` on `𝒮`. -/
@@ -238,14 +230,6 @@ theorem exists_rim_zero (h : C.ν₂ = ((0 : E d), (1 : ℝ))) :
   rw [add_sub_cancel_left]
   refine le_antisymm hk.1 (not_lt.1 fun hlt ↦ (vhat_pos_of_mem_topDisk C ?_).ne' hk0)
   exact ⟨by rwa [mem_ball, dist_eq_norm, add_sub_cancel_left], rfl⟩
-
-/-- Unwinding for the supersolution, bundled. If `ν² = e_t`: (a) `v̂ > 0` on `𝒮`;
-(b) `v̂ > 0` on `𝒟`; (c) there is `x̄` with `|x̄ - x⋆| = λ₁` and `v̂(x̄, t⋆) = 0`. -/
-theorem unwind_v (h : C.ν₂ = ((0 : E d), (1 : ℝ))) :
-    (∀ q ∈ sausage C, 0 < P.vhat q) ∧ (∀ q ∈ topDisk C, 0 < P.vhat q) ∧
-      ∃ xb : E d, ‖xb - C.xstar‖ = P.ℓ ∧ P.vhat (xb, C.tstar) = 0 :=
-  ⟨fun _ hq ↦ vhat_pos_of_mem_sausage C hq, fun _ hq ↦ vhat_pos_of_mem_topDisk C hq,
-    exists_rim_zero C h⟩
 
 end Polar
 

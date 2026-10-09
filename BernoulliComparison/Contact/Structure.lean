@@ -18,8 +18,8 @@ At a first contact point `p⋆ = (x⋆, t⋆)`:
 (iv) (exterior past points) `p⋆ ∈ closure ((D₁ \ E₁) ∩ {t < t⋆})`
 (`contact_structure_exterior_past`).
 
-`contact_structure` bundles (i)–(iv). Closures are topological; the neighbourhoods in the proof of
-(iv) are taken in the sup metric of `E d × ℝ` (equivalent to the Euclidean one for closures).
+Closures are topological; the neighbourhoods in the proof of (iv) are taken in the sup metric of
+`E d × ℝ` (equivalent to the Euclidean one for closures).
 -/
 
 @[expose] public section
@@ -105,15 +105,6 @@ theorem contact_structure_exterior_past (h : P.IsFirstContact p) :
     P.isSupercal_one hρ (by linarith) hτd hsub hpos
   rw [(zero_contact h).2] at hv
   exact lt_irrefl _ hv
-
-/-- The contact structure, (i)–(iv) together. -/
-theorem contact_structure (h : P.IsFirstContact p) :
-    (∀ q ∈ P.E₁, q.2 < p.2 → 0 < P.v₁ q) ∧
-    p ∈ closure (P.E₁ ∩ {q | q.2 < p.2}) ∧
-    (P.v₁ p = 0 ∧ p ∈ closure {q ∈ P.D₁ | 0 < P.v₁ q ∧ q.2 < p.2}) ∧
-    p ∈ closure ((P.D₁ \ P.E₁) ∩ {q | q.2 < p.2}) :=
-  ⟨contact_structure_pos h, contact_structure_past h, contact_structure_pos_past h,
-    contact_structure_exterior_past h⟩
 
 end Contact
 

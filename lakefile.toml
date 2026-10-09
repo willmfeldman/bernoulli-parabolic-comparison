@@ -1,5 +1,5 @@
 name = "bernoulli_parabolic_comparison"
-version = "0.3.0"
+version = "0.3.1"
 description = "Lean 4 formalization of the comparison principle for barrier-defined viscosity solutions of the parabolic Bernoulli (one-phase free boundary) problem"
 keywords = ["math", "free-boundary", "viscosity-solutions", "parabolic-pde"]
 preferReleaseBuild = true
