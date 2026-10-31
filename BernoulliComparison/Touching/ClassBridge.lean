@@ -71,14 +71,17 @@ variable {U : Set (E d)} {Q : E d → ℝ} {I : Set ℝ} {u : E d × ℝ → ℝ
 
 /-- Relaxed-subsolution bridge with local test functions. If `(u, E)` is a relaxed subsolution, `Q`
 is continuous at `x₀`, and a test function `φ` at `p = (x₀, t₀) ∈ U × I` touches `u` from above in
-`E` at `p`, then `(∂ₜφ - Δφ)(p) ≤ 0`, or `φ(p) = 0` and `|∇φ(p)| ≥ Q(x₀)`. -/
+`E` at `p`, with `∇φ(p) ≠ 0` if `φ(p) = 0`, then `(∂ₜφ - Δφ)(p) ≤ 0`, or `φ(p) = 0` and
+`|∇φ(p)| ≥ Q(x₀)`. -/
 theorem IsParaRelaxedSub.touching_alt_of_isTestFunAt (hsub : IsParaRelaxedSub U Q I u S)
     (hU : IsOpen U) (hpU : p.1 ∈ U) (hpI : I ∈ 𝓝[≤] p.2) (hQ : ContinuousAt Q p.1)
-    (hφ : IsTestFunAt φ p) (hcross : CrossesFromAbove S u φ p) :
+    (hφ : IsTestFunAt φ p) (hcross : CrossesFromAbove S u φ p)
+    (hnd : φ p = 0 → gradₓ φ p ≠ 0) :
     dₜ φ p - lapₓ φ p ≤ 0 ∨ (φ p = 0 ∧ Q p.1 ≤ ‖gradₓ φ p‖) := by
   refine (forall_isTestFunAt_crossesFromAbove_iff
-    (P := fun φ ↦ dₜ φ p - lapₓ φ p ≤ 0 ∨ (φ p = 0 ∧ Q p.1 ≤ ‖gradₓ φ p‖)) ?_).2
-    (fun ψ hψ hc ↦ hsub.touching_alt hU hpU hpI hQ hψ hc) φ hφ hcross
+    (P := fun φ ↦ (φ p = 0 → gradₓ φ p ≠ 0) →
+      dₜ φ p - lapₓ φ p ≤ 0 ∨ (φ p = 0 ∧ Q p.1 ≤ ‖gradₓ φ p‖)) ?_).2
+    (fun ψ hψ hc ↦ hsub.touching_alt hU hpU hpI hQ hψ hc) φ hφ hcross hnd
   intro _ _ h
   rw [dₜ_congr_of_eventuallyEq h, lapₓ_congr_of_eventuallyEq h,
       gradₓ_congr_of_eventuallyEq h, h.eq_of_nhds]
@@ -88,8 +91,8 @@ theorem IsParaRelaxedSub.touching_alt_of_isTestFunAt (hsub : IsParaRelaxedSub U 
 `TSub(U × I, E, u, Q)`. -/
 theorem IsParaRelaxedSub.touchSub (hsub : IsParaRelaxedSub U Q I u S) (hU : IsOpen U)
     (hI : ∀ t ∈ I, I ∈ 𝓝[≤] t) (hQ : ContinuousOn Q U) : TouchSub (U ×ˢ I) S u Q :=
-  fun p hp _ hφ hcross ↦ hsub.touching_alt_of_isTestFunAt hU hp.2.1 (hI p.2 hp.2.2)
-    (hQ.continuousAt (hU.mem_nhds hp.2.1)) hφ hcross
+  fun p hp _ hφ hcross hnd ↦ hsub.touching_alt_of_isTestFunAt hU hp.2.1 (hI p.2 hp.2.2)
+    (hQ.continuousAt (hU.mem_nhds hp.2.1)) hφ hcross hnd
 
 /-- Subcaloricity with local test functions: `Subcal(U × I, u)`. -/
 theorem IsParaRelaxedSub.isSubcal (hsub : IsParaRelaxedSub U Q I u S) (hU : IsOpen U)

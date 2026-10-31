@@ -88,9 +88,12 @@ private theorem barrier_super :
       sub_zero]
     simp only [Barriers.paraboloid_apply, sub_zero] at h0
     have ht := hp.2.2.2
+    have ht0 := hp.2.2.1
     have hn := norm_nonneg p.1
-    norm_num at h0 ⊢
-    nlinarith
+    have hx2 : ‖p.1‖ ^ 2 = 1 + p.2 := by linear_combination -h0
+    have hc : ‖-(2 / (1 : ℝ) ^ 2)‖ = 2 := by norm_num
+    rw [hc]
+    constructor <;> nlinarith
 
 private theorem barrier_frontier_nonempty (hd : 0 < d) :
     (frontier {p : E d × ℝ | 0 < 1 + p.2 - ‖p.1‖ ^ 2} ∩

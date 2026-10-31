@@ -93,11 +93,11 @@ theorem snd_eq_of_mem_parBdry_univ {a b : ℝ} {p : E 0 × ℝ} (hp : p ∈ parB
 /-! ### Step 1: `u` does not increase along `E` -/
 
 /-- Dimension zero, Step 1. For a relaxed subsolution `(u, E)` on `ℝ⁰ × (0, T]`
-(with `U = univ` and `Q > 0`), `u(t) ≤ u(a)` whenever `0 < a < t ≤ T` and `(x, t) ∈ E`. Test
+(with `U = univ`), `u(t) ≤ u(a)` whenever `0 < a < t ≤ T` and `(x, t) ∈ E`. Test
 function: `φ = u(a) + ε/2 + ε/(2(t - a)) · (s - a)`, a strict supersolution
-(`∂ₜφ > 0`, `∇φ = 0`). -/
+(`∂ₜφ > 0`, and `∂{φ > 0}` does not meet `univ × [a, t]` since `φ ≥ ε/2` there). -/
 theorem dimZero_sub_le {Q : E 0 → ℝ} {T : ℝ} {u : E 0 × ℝ → ℝ} {Eset : Set (E 0 × ℝ)}
-    (hsub : IsParaRelaxedSub univ Q (Ioc 0 T) u Eset) (hQ : ∀ x, 0 < Q x) {x : E 0}
+    (hsub : IsParaRelaxedSub univ Q (Ioc 0 T) u Eset) {x : E 0}
     {a t : ℝ} (ha : 0 < a) (hat : a < t) (htT : t ≤ T) (hp : (x, t) ∈ Eset) :
     u (x, t) ≤ u (x, a) := by
   refine le_of_forall_pos_lt_add fun ε hε ↦ ?_
@@ -105,10 +105,19 @@ theorem dimZero_sub_le {Q : E 0 → ℝ} {T : ℝ} {u : E 0 × ℝ → ℝ} {Ese
   set η := ε / (2 * (t - a)) with hη
   have hηpos : 0 < η := by positivity
   set φ : E 0 × ℝ → ℝ := fun q ↦ (u (x, a) + ε / 2) + η * (q.2 - a) with hφ
+  have hua : 0 ≤ u (x, a) := hsub.2.1 (x, a) ⟨mem_univ _, ha, hat.le.trans htT⟩
   have hsuper : IsClassicalStrictParaSuper Q φ univ a t := by
-    refine ⟨contDiff_affine _ _ _, fun p _ ↦ ?_, fun p _ ↦ ?_⟩
+    refine ⟨contDiff_affine _ _ _, fun p _ ↦ ?_, fun p hp ↦ ?_⟩
     · rw [hφ, dₜ_affine, lapₓ_dim_zero]; linarith
-    · rw [gradₓ_dim_zero, norm_zero]; exact hQ _
+    · -- `φ ≥ u(a) + ε/2 > 0` for `s ≥ a`, so `∂{φ > 0}` misses the cylinder
+      exfalso
+      have hpos : p ∈ {q | 0 < φ q} := by
+        have := mul_nonneg hηpos.le (sub_nonneg.2 hp.2.2.1)
+        change 0 < (u (x, a) + ε / 2) + η * (p.2 - a)
+        linarith
+      have hopen : IsOpen {q | 0 < φ q} :=
+        isOpen_lt continuous_const (contDiff_affine (d := 0) _ _ _).continuous
+      exact hp.1.2 (hopen.interior_eq.symm ▸ hpos)
   have hbd : PrecOn u φ Eset (parBdry univ a t) := by
     rintro p ⟨-, hp⟩
     have h2 := snd_eq_of_mem_parBdry_univ hp
@@ -247,7 +256,7 @@ theorem para_relaxed_comparison_dim_zero {U : Set (E 0)} {Q : E 0 → ℝ} {T : 
     exact dimZero_super_le hsuper hq0 hqt hp₀T (by rw [← hq]; linarith)
   have hu₁ : u p₀ ≤ u q := by
     rw [hq, hp₀]
-    exact dimZero_sub_le hsub hQ0 hq0 hqt hp₀T (hp₀ ▸ hp₀E)
+    exact dimZero_sub_le hsub hq0 hqt hp₀T (hp₀ ▸ hp₀E)
   linarith
 
 end Main

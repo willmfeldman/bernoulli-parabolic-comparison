@@ -711,8 +711,14 @@ theorem sub_rate (h₁ : C.ν₁.1 ≠ 0) {ε : ℝ} (hε0 : 0 < ε) (hε1 : ε 
             linarith
         exact hcomp z hmem
   /- ## Contradiction with `TSub(O₀, E₀, u₀, c₁)` -/
+  have hnd : φ C.q₁ = 0 → gradₓ φ C.q₁ ≠ 0 := fun _ h0 ↦ by
+    have hn := congrArg norm h0
+    rw [norm_zero, hφ, Barriers.norm_gradₓ_subBarrier hq₁ne rfl, ← hw, ← ht₁, hwx] at hn
+    simp only [sub_self, mul_zero, sub_zero] at hn
+    rw [abs_of_pos hβ'pos] at hn
+    exact hβ'pos.ne' hn
   rcases C.touchSub_zero C.q₁ ⟨C.q₁_mem_E₀, C.q₁_mem_O₀⟩ φ
-      (Barriers.isTestFunAt_subBarrier hq₁ne) hcross with hH | ⟨-, hgrad⟩
+      (Barriers.isTestFunAt_subBarrier hq₁ne) hcross hnd with hH | ⟨-, hgrad⟩
   · linarith [hheat _ hq₁Ωc]
   · rw [hφ, Barriers.norm_gradₓ_subBarrier hq₁ne rfl, ← hw, ← ht₁, hwx] at hgrad
     simp only [sub_self, mul_zero, sub_zero] at hgrad

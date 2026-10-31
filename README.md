@@ -9,7 +9,7 @@ in a cylinder `U × (0, T]`, with `U ⊆ ℝᵈ` bounded and open and `Q` Lipsch
 and bounded below by a positive constant. Sub- and supersolutions are defined
 by comparison with classical strict barriers, and the subsolution may be
 *relaxed*: a pair `(u, E)` whose closed set `E` contains the positivity set
-`{u > 0}`. The approximately 11,700 lines of Lean source are `sorry`-free and
+`{u > 0}`. The approximately 11,900 lines of Lean source are `sorry`-free and
 introduce no axioms: the headline theorems depend only on `propext`,
 `Classical.choice` and `Quot.sound`.
 
@@ -42,8 +42,10 @@ Take any admissible cylinder `V × (a, b]` compactly inside the domain and any
 such `φ`. A continuous `v ≥ 0` is a supersolution if `φ < v` on the closure of
 `{φ > 0}` along the parabolic boundary of the cylinder implies the same inside
 the cylinder. Subsolutions are defined symmetrically, with classical strict
-supersolutions. For relaxed subsolutions the order is tested on `E` rather than
-on the closure of `{u > 0}`.
+supersolutions: `C^∞` functions `φ` with `∂ₜφ − Δφ > 0` on the closure of
+`{φ > 0}` and `0 < |∇φ| < Q` on `∂{φ > 0}`, so the free-boundary gradient of a
+test supersolution is nonzero. For relaxed subsolutions the order is tested on
+`E` rather than on the closure of `{u > 0}`.
 
 ## Proof
 

@@ -299,8 +299,12 @@ theorem slope_sub_static {O Eset : Set (E d × ℝ)} {u : E d × ℝ → ℝ} {c
     simp only at hξ ⊢
     rw [hξ, deriv_slopeProfile]
     simp [abs_of_pos hβ'pos]
+  -- `∇φ(z̄) ≠ 0`, so `φ` is an admissible test function for `TSub`
+  have hnd : φ (xb, tb) = 0 → gradₓ φ (xb, tb) ≠ 0 := fun _ ↦ by
+    rw [← norm_ne_zero_iff, hgrad, hβ']
+    exact (by linarith : (0 : ℝ) < (c + β) / 2).ne'
   -- both alternatives of `TSub` fail
-  rcases hu _ ⟨hE, hN hmemN⟩ φ htest hcross with hH | ⟨-, hQ⟩
+  rcases hu _ ⟨hE, hN hmemN⟩ φ htest hcross hnd with hH | ⟨-, hQ⟩
   · rw [hdt, hlap] at hH
     linarith
   · rw [hgrad] at hQ

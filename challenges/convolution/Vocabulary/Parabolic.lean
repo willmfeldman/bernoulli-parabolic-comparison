@@ -17,9 +17,9 @@ barriers on small cylinders, in the spirit of Caffarelli's definition for the el
 
 * a *classical strict subsolution* on `V̄ × [a, b]` is a globally `C^∞` function `φ` with
   `∂ₜφ - Δφ < 0` on the closure of `{φ > 0}` and `|∇φ| > Q` on the free boundary `∂{φ > 0}`
-  (both restricted to `V̄ × [a, b]`); a *classical strict supersolution* has the reverse strict
-  inequalities. The sets `{φ > 0}`, its closure and its frontier are taken in all of
-  space-time.
+  (both restricted to `V̄ × [a, b]`); a *classical strict supersolution* has `∂ₜφ - Δφ > 0` on
+  the closure of `{φ > 0}` and `0 < |∇φ| < Q` on `∂{φ > 0}`, so its free-boundary gradient is
+  nonzero. The sets `{φ > 0}`, its closure and its frontier are taken in all of space-time.
 * `u` is a *supersolution* (`IsParaSuper`) if, for every admissible cylinder
   `V × (a, b] ⊂⊂ U × I` and every classical strict subsolution `φ` there, `φ ≺ u` on the
   parabolic boundary implies `φ ≺ u` in the cylinder. Here `φ ≺ u on F` means `φ < u` at the
@@ -69,13 +69,13 @@ def IsClassicalStrictParaSub (Q : E d → ℝ) (φ : E d × ℝ → ℝ) (V : Se
     ∀ p ∈ frontier {q | 0 < φ q} ∩ (closure V ×ˢ Icc a b), Q p.1 < ‖gradₓ φ p‖
 
 /-- Classical strict supersolution on `V̄ × [a, b]`: `φ` is `C^∞` on space-time,
-`∂ₜφ - Δₓφ > 0` on `closure {φ > 0} ∩ (V̄ × [a, b])`, and `|∇ₓφ| < Q` on
+`∂ₜφ - Δₓφ > 0` on `closure {φ > 0} ∩ (V̄ × [a, b])`, and `0 < |∇ₓφ| < Q` on
 `∂{φ > 0} ∩ (V̄ × [a, b])`. -/
 def IsClassicalStrictParaSuper (Q : E d → ℝ) (φ : E d × ℝ → ℝ) (V : Set (E d)) (a b : ℝ) :
     Prop :=
   ContDiff ℝ ∞ φ ∧
     (∀ p ∈ closure {q | 0 < φ q} ∩ (closure V ×ˢ Icc a b), 0 < dₜ φ p - lapₓ φ p) ∧
-    ∀ p ∈ frontier {q | 0 < φ q} ∩ (closure V ×ˢ Icc a b), ‖gradₓ φ p‖ < Q p.1
+    ∀ p ∈ frontier {q | 0 < φ q} ∩ (closure V ×ˢ Icc a b), 0 < ‖gradₓ φ p‖ ∧ ‖gradₓ φ p‖ < Q p.1
 
 /-- Supersolution of the parabolic Bernoulli problem in `U × I`: `u` is continuous and
 nonnegative on `U × I`, and for every admissible cylinder `V × (a, b]` and every classical strict

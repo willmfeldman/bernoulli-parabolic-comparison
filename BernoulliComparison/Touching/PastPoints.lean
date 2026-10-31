@@ -6,6 +6,7 @@ Authors: William M. Feldman
 module
 
 public import BernoulliComparison.Touching.Caloric
+public import BernoulliComparison.Barriers.Paraboloid
 
 /-!
 # No instant creation of the relaxed set
@@ -14,9 +15,13 @@ If `(u, E)` is a relaxed subsolution, every point `p ∈ E` (with `p.1 ∈ U`, `
 continuous and positive at `p.1`) is a limit of points of `E` at strictly earlier times.
 
 Proof. Suppose `E ∩ Q_ρ(p) ⊆ {t = t₀}`. Step 1: `u = 0` on `E ∩ Q_ρ(p)`, since
-at a point `(z, t₀)` with `u > 0` the points `(z, s)`, `s ↑ t₀`, lie in `{u > 0} ⊆ E`. Step 2: then
-`φ(x, t) = t - t₀` crosses `u` from above in `E` at `p`; but `∂ₜφ - Δφ = 1 > 0` and
-`|∇φ| = 0 < Q(x₀)`, contradicting the relaxed bridge.
+at a point `(z, t₀)` with `u > 0` the points `(z, s)`, `s ↑ t₀`, lie in `{u > 0} ⊆ E`. Step 2: for
+small `r < ρ` with `Q ≥ Q(x₀)/2` on `B̄_r(x₀)`, `η = Q(x₀)/(8r)` and `c₀ = ηr²/2`, the function
+`ψ(x, t) = (1 + 2dη)(t - t₀) + η|x - x₀|² - c₀` is a classical strict supersolution on
+`B̄_r(x₀) × [t₀ - r², t₀]`: `∂ₜψ - Δψ = 1`, and on `∂{ψ > 0}` (where `ψ = 0` and `t ≤ t₀`)
+`η|x - x₀|² ≥ c₀ > 0`, so `0 < |∇ψ| = 2η|x - x₀| ≤ 2ηr < Q(x₀)/2 ≤ Q(x)`. On the parabolic
+boundary, points of `E` have `t = t₀` and `|x - x₀| = r`, so `u = 0 < ηr²/2 = ψ`. The barrier
+clause then gives `u(p) < ψ(p) = -c₀ < 0`, a contradiction.
 -/
 
 @[expose] public section
@@ -80,16 +85,81 @@ theorem IsParaRelaxedSub.past_points (hsub : IsParaRelaxedSub U Q I u S) (hU : I
     have := hsame (q.1, s) ⟨hsS, mem_parCyl.2 ⟨hq1, hs1, hs2.le⟩⟩
     simp only at this
     linarith
-  -- Step 2: the test function `t - t₀` crosses `u` from above in `S` at `p`.
-  have hcross : CrossesFromAbove S u (fun q ↦ q.2 - p.2) p := by
-    refine ⟨hpS, ?_, ρ, hρ, fun q hq ↦ ?_⟩
-    · rw [hzero p ⟨hpS, self_mem_parCyl hρ⟩]; simp
-    · change u q ≤ q.2 - p.2
-      rw [hzero q hq, hsame q hq, sub_self]
-  have hφ : ContDiff ℝ ∞ (fun q : E d × ℝ ↦ q.2 - p.2) := contDiff_snd.sub contDiff_const
-  rcases hsub.touching_alt hU hpU hpI hQ hφ hcross with h | ⟨-, h⟩
-  · rw [dₜ_time_sub, lapₓ_time_sub] at h; norm_num at h
-  · rw [gradₓ_time_sub, norm_zero] at h; linarith
+  -- Step 2: a strict supersolution barrier `ψ` with `ψ(p) < 0` lies above `u` on the
+  -- parabolic boundary of a small cylinder; `ψ = (1 + 2dη)(t - t₀) + η|x - x₀|² - c₀`.
+  obtain ⟨ε, hε, hεQ⟩ := Metric.eventually_nhds_iff.1
+    (hQ.eventually (lt_mem_nhds (half_lt_self hQpos)))
+  set r := min (ρ / 2) (ε / 2) with hrdef
+  have hr0 : 0 < r := lt_min (half_pos hρ) (half_pos hε)
+  have hrρ : r < ρ := (min_le_left _ _).trans_lt (half_lt_self hρ)
+  have hrε : r < ε := (min_le_right _ _).trans_lt (half_lt_self hε)
+  have hCρ : closedParCyl p.1 p.2 r ⊆ parCyl p.1 p.2 ρ := fun q hq ↦ by
+    obtain ⟨hq1, hq2, hq3⟩ := mem_closedParCyl.1 hq
+    exact mem_parCyl.2 ⟨hq1.trans_lt hrρ, by nlinarith, hq3⟩
+  have hCUI : closedParCyl p.1 p.2 r ⊆ U ×ˢ I := hCρ.trans hcylUI
+  have hQr : ∀ x ∈ closedBall p.1 r, Q p.1 / 2 < Q x := fun x hx ↦
+    hεQ ((mem_closedBall.1 hx).trans_lt hrε)
+  set η := Q p.1 / (8 * r) with hηdef
+  have hη : 0 < η := by positivity
+  have hηr : 2 * η * r = Q p.1 / 4 := by rw [hηdef]; field_simp; ring
+  set c₀ := η * r ^ 2 / 2 with hc₀def
+  have hc₀ : 0 < c₀ := by positivity
+  set P := Barriers.paraboloid p.1 p.2 1 0 with hPdef
+  set ψ : E d × ℝ → ℝ := fun q ↦ (q.2 - p.2) + (-η * P q + -c₀) with hψdef
+  have hψeq : ∀ q : E d × ℝ,
+      ψ q = (1 + 2 * d * η) * (q.2 - p.2) + η * ‖q.1 - p.1‖ ^ 2 - c₀ := fun q ↦ by
+    simp only [hψdef, hPdef, Barriers.paraboloid_apply]; ring
+  have hT : ContDiff ℝ ∞ (fun q : E d × ℝ ↦ q.2 - p.2) := contDiff_snd.sub contDiff_const
+  have hψ : ContDiff ℝ ∞ ψ :=
+    hT.add ((contDiff_const.mul (Barriers.contDiff_paraboloid _ _ _ _)).add contDiff_const)
+  have hψheat : ∀ q, dₜ ψ q - lapₓ ψ q = 1 := fun q ↦ by
+    rw [dₜ_sub_lapₓ_add_mul_add (hT.of_le (by norm_cast)) (Barriers.contDiff_paraboloid _ _ _ _),
+      Barriers.dₜ_sub_lapₓ_paraboloid, dₜ_time_sub, lapₓ_time_sub]
+    ring
+  have hψgrad : ∀ q, ‖gradₓ ψ q‖ = 2 * η * ‖q.1 - p.1‖ := fun q ↦ by
+    rw [gradₓ_add_mul_add ((hT.of_le (by norm_cast) : ContDiff ℝ 1 _).differentiable one_ne_zero)
+      ((Barriers.contDiff_paraboloid (n := 1) _ _ _ _).differentiable one_ne_zero),
+      Barriers.gradₓ_paraboloid, gradₓ_time_sub, zero_add, smul_smul, norm_smul,
+      Real.norm_eq_abs, abs_of_pos (by ring_nf; positivity)]
+    ring
+  have hclosure : closure (ball p.1 r) ×ˢ Icc (p.2 - r ^ 2) p.2 = closedParCyl p.1 p.2 r := by
+    rw [closure_ball _ hr0.ne']; rfl
+  have hclass : IsClassicalStrictParaSuper Q ψ (ball p.1 r) (p.2 - r ^ 2) p.2 := by
+    refine ⟨hψ, fun q _ ↦ by rw [hψheat]; exact one_pos, fun q hq ↦ ?_⟩
+    rw [hclosure] at hq
+    obtain ⟨hq1, -, hq3⟩ := mem_closedParCyl.1 hq.2
+    rw [dist_eq_norm] at hq1
+    -- `ψ = 0` on the frontier of `{ψ > 0}`
+    have hψ0 : ψ q = 0 := by
+      have hfr := hq.1
+      rw [(isOpen_lt continuous_const hψ.continuous).frontier_eq] at hfr
+      exact le_antisymm (not_lt.1 hfr.2)
+        (closure_lt_subset_le continuous_const hψ.continuous hfr.1)
+    rw [hψeq] at hψ0
+    have hdη : 0 ≤ 2 * (d : ℝ) * η := by positivity
+    have hx : 0 < ‖q.1 - p.1‖ := by
+      by_contra hx0
+      have hx0' : ‖q.1 - p.1‖ = 0 := le_antisymm (not_lt.1 hx0) (norm_nonneg _)
+      rw [hx0'] at hψ0
+      nlinarith
+    rw [hψgrad]
+    refine ⟨by positivity, ?_⟩
+    have := hQr q.1 (mem_closedBall.2 (by rw [dist_eq_norm]; exact hq1))
+    nlinarith
+  -- `u ≺_S ψ` on the parabolic boundary: there `q.2 = t₀` and `|x - x₀| = r`
+  have hbdry : PrecOn u ψ S (parBdry (ball p.1 r) (p.2 - r ^ 2) p.2) := by
+    rintro q ⟨hqS, hq⟩
+    have hqρ : q ∈ S ∩ parCyl p.1 p.2 ρ := ⟨hqS, hCρ (parBdry_ball_subset_closedParCyl hr0 hq)⟩
+    have hb := sq_le_bumpP hr0 hq
+    have hq2 := hsame q hqρ
+    rw [hzero q hqρ, hψeq, hq2]
+    simp only [bumpP, hq2, sub_self, add_zero] at hb
+    nlinarith
+  have hconcl := hsub.2.2.2.2.2 _ _ _ ψ (admissibleCyl_ball hr0 hCUI) hclass hbdry
+  have hp := hconcl p ⟨hpS, mem_cyl_ball hr0⟩
+  rw [hψeq, sub_self, sub_self, norm_zero] at hp
+  have := hsub.2.1 p (hcylUI (self_mem_parCyl hρ))
+  nlinarith
 
 /-- Past points, Euclidean-ball form: for every `ε > 0` there is `q ∈ E` with
 `q.2 < p.2` and `|q - p| < ε` (Euclidean space-time distance). -/

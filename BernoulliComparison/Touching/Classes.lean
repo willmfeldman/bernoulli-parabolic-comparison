@@ -53,11 +53,14 @@ variable {d : ℕ}
 /-! ### Definitions -/
 
 /-- The class `TSub(O,E,u,Q)`: for every `p ∈ E ∩ O` and every test function
-`φ` at `p` touching `u` from above in `E` at `p`: `(∂ₜφ - Δφ)(p) ≤ 0`, or `φ(p) = 0` and
-`|∇φ(p)| ≥ Q(x₀)`. -/
+`φ` at `p` touching `u` from above in `E` at `p`, with `∇φ(p) ≠ 0` if `φ(p) = 0`:
+`(∂ₜφ - Δφ)(p) ≤ 0`, or `φ(p) = 0` and `|∇φ(p)| ≥ Q(x₀)`.
+
+The nondegeneracy premise matches the classical strict supersolutions of the barrier
+definition, whose free-boundary gradient is nonzero. -/
 def TouchSub (O Eset : Set (E d × ℝ)) (u : E d × ℝ → ℝ) (Q : E d → ℝ) : Prop :=
   ∀ p ∈ Eset ∩ O, ∀ φ : E d × ℝ → ℝ, IsTestFunAt φ p → CrossesFromAbove Eset u φ p →
-    dₜ φ p - lapₓ φ p ≤ 0 ∨ (φ p = 0 ∧ Q p.1 ≤ ‖gradₓ φ p‖)
+    (φ p = 0 → gradₓ φ p ≠ 0) → dₜ φ p - lapₓ φ p ≤ 0 ∨ (φ p = 0 ∧ Q p.1 ≤ ‖gradₓ φ p‖)
 
 /-- The class `TSuper(O,v,Q)`: for every `p ∈ O` and every test function `φ` at
 `p` touching `v` from below in `O` at `p`: `(∂ₜφ - Δφ)(p) ≥ 0`, or `φ(p) = 0` and
@@ -90,7 +93,8 @@ variable {O O' Eset : Set (E d × ℝ)} {u v w : E d × ℝ → ℝ} {Q Q' : E d
 `Touching/Extend.lean` and locality of touching). -/
 theorem touchSub_iff_contDiff :
     TouchSub O Eset u Q ↔ ∀ p ∈ Eset ∩ O, ∀ φ : E d × ℝ → ℝ, ContDiff ℝ ∞ φ →
-      CrossesFromAbove Eset u φ p → dₜ φ p - lapₓ φ p ≤ 0 ∨ (φ p = 0 ∧ Q p.1 ≤ ‖gradₓ φ p‖) :=
+      CrossesFromAbove Eset u φ p → (φ p = 0 → gradₓ φ p ≠ 0) →
+        dₜ φ p - lapₓ φ p ≤ 0 ∨ (φ p = 0 ∧ Q p.1 ≤ ‖gradₓ φ p‖) :=
   forall₂_congr fun _ _ ↦ forall_isTestFunAt_crossesFromAbove_iff fun _ _ h ↦ by
     rw [dₜ_congr_of_eventuallyEq h, lapₓ_congr_of_eventuallyEq h,
       gradₓ_congr_of_eventuallyEq h, h.eq_of_nhds]; exact id
@@ -156,8 +160,8 @@ variable {O Eset : Set (E d × ℝ)} {u v : E d × ℝ → ℝ} {Q Q' : E d → 
 /-- Monotonicity in `Q` for `TSub`: if `Q ≤ Q'` over `O`, then `TSub(O,E,u,Q')` implies
 `TSub(O,E,u,Q)`. -/
 theorem TouchSub.mono_Q (h : TouchSub O Eset u Q') (hQ : ∀ p ∈ O, Q p.1 ≤ Q' p.1) :
-    TouchSub O Eset u Q := fun p hp φ hφ hc ↦
-  (h p hp φ hφ hc).imp_right fun h' ↦ ⟨h'.1, (hQ p hp.2).trans h'.2⟩
+    TouchSub O Eset u Q := fun p hp φ hφ hc hnd ↦
+  (h p hp φ hφ hc hnd).imp_right fun h' ↦ ⟨h'.1, (hQ p hp.2).trans h'.2⟩
 
 /-- Monotonicity in `Q` for `TSuper`: if `Q ≤ Q'` over `O`, then `TSuper(O,v,Q)` implies
 `TSuper(O,v,Q')`. -/
@@ -209,13 +213,18 @@ variable {O Eset : Set (E d × ℝ)} {u v w : E d × ℝ → ℝ} {Q : E d → �
 `TSub(O,E,c u,c Q)`. -/
 theorem TouchSub.smul (h : TouchSub O Eset u Q) (hc : 0 < c) : TouchSub O Eset (c • u) (c • Q) := by
   rw [touchSub_iff_contDiff] at h ⊢
-  intro p hp φ hφ hcross
+  intro p hp φ hφ hcross hnd
   have hψ : ContDiff ℝ ∞ (c⁻¹ • φ) := contDiff_const.smul hφ
   have hcr : CrossesFromAbove Eset u (c⁻¹ • φ) p := by
     simpa [smul_smul, inv_mul_cancel₀ hc.ne'] using hcross.smul (inv_nonneg.2 hc.le)
   have h2 : ContDiff ℝ 2 φ := hφ.of_le (by norm_cast)
   have h1 : ContDiff ℝ 1 φ := hφ.of_le (by norm_cast)
-  rcases h p hp _ hψ hcr with hH | ⟨h0, hgr⟩
+  have hnd' : (c⁻¹ • φ) p = 0 → gradₓ (c⁻¹ • φ) p ≠ 0 := by
+    intro h0
+    simp only [Pi.smul_apply, smul_eq_mul, mul_eq_zero, inv_eq_zero, hc.ne', false_or] at h0
+    rw [gradₓ_smul h1]
+    exact smul_ne_zero (inv_ne_zero hc.ne') (hnd h0)
+  rcases h p hp _ hψ hcr hnd' with hH | ⟨h0, hgr⟩
   · left
     rw [dₜ_smul, lapₓ_smul h2, ← mul_sub] at hH
     exact nonpos_of_mul_nonpos_right hH (inv_pos.2 hc)

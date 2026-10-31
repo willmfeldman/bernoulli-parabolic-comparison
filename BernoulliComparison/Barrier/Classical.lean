@@ -29,12 +29,12 @@ variable {d : ℕ}
 
 /-! ### Monotonicity in `Q` -/
 
-/-- Increasing `Q` keeps a classical strict supersolution: `‖∇φ‖ < Q` on the free boundary is
-easier to satisfy for a larger `Q`. -/
+/-- Increasing `Q` keeps a classical strict supersolution: `0 < ‖∇φ‖ < Q` on the free boundary
+is easier to satisfy for a larger `Q`. -/
 theorem IsClassicalStrictParaSuper.mono_Q {Q Q' : E d → ℝ} {φ : E d × ℝ → ℝ} {V : Set (E d)}
     {a b : ℝ} (h : IsClassicalStrictParaSuper Q φ V a b) (hQ : ∀ x, Q x ≤ Q' x) :
     IsClassicalStrictParaSuper Q' φ V a b :=
-  ⟨h.1, h.2.1, fun p hp ↦ (h.2.2 p hp).trans_le (hQ p.1)⟩
+  ⟨h.1, h.2.1, fun p hp ↦ ⟨(h.2.2 p hp).1, (h.2.2 p hp).2.trans_le (hQ p.1)⟩⟩
 
 /-- Decreasing `Q` keeps a classical strict subsolution: `Q < ‖∇φ‖` on the free boundary is
 easier to satisfy for a smaller `Q`. -/
@@ -83,7 +83,7 @@ theorem IsClassicalStrictParaSuper.const_smul {Q : E d → ℝ} {φ : E d × ℝ
   · rw [show frontier {q : E d × ℝ | 0 < (c • φ) q} = frontier {q | 0 < φ q} by rw [hposeq]] at hp
     rw [norm_gradₓ_const_smul c φ p (ContDiff.differentiableAt_gradₓ hφ p), abs_of_pos hc]
     simp only [Pi.smul_apply, smul_eq_mul]
-    exact (mul_lt_mul_iff_right₀ hc).mpr (hgrad p hp)
+    exact ⟨mul_pos hc (hgrad p hp).1, (mul_lt_mul_iff_right₀ hc).mpr (hgrad p hp).2⟩
 
 /-- Scaling a classical strict subsolution's test function `φ ↦ c • φ` (`c > 0`) turns a
 barrier for `Q` into a barrier for `c • Q`. -/
@@ -216,7 +216,7 @@ theorem IsClassicalStrictParaSuper.translate {Q : E d → ℝ} {φ : E d × ℝ 
     rw [hgeq]
     have hpx : (p + k).1 = p.1 + k.1 := rfl
     rw [hpx]
-    exact (hgrad p hp).trans_le (hQ' p.1 hp.2.1)
+    exact ⟨(hgrad p hp).1, (hgrad p hp).2.trans_le (hQ' p.1 hp.2.1)⟩
 
 /-- Translating a classical strict subsolution's test function by
 `k` gives a barrier for any `Q'` dominated by the translate of `Q` on `closure V`. -/

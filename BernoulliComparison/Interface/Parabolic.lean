@@ -79,13 +79,17 @@ def IsClassicalStrictParaSub (Q : E d → ℝ) (φ : E d × ℝ → ℝ) (V : Se
     ∀ p ∈ frontier {q | 0 < φ q} ∩ (closure V ×ˢ Icc a b), Q p.1 < ‖gradₓ φ p‖
 
 /-- Classical strict supersolution of the parabolic Bernoulli problem on `V̄ × [a, b]`: `φ` is
-globally smooth, `∂ₜφ - Δφ > 0` on `\overline{{φ > 0}} ∩ (V̄ × [a, b])` and `|∇φ| < Q` on
-`∂{φ > 0} ∩ (V̄ × [a, b])`. -/
+globally smooth, `∂ₜφ - Δφ > 0` on `\overline{{φ > 0}} ∩ (V̄ × [a, b])` and `0 < |∇φ| < Q` on
+`∂{φ > 0} ∩ (V̄ × [a, b])`.
+
+The free-boundary gradient of a test supersolution is required to be nonzero. This
+shrinks the class of test supersolutions, so the sub-side classes `IsParaSub` and
+`IsParaRelaxedSub`, which are tested against it, are larger. -/
 def IsClassicalStrictParaSuper (Q : E d → ℝ) (φ : E d × ℝ → ℝ) (V : Set (E d)) (a b : ℝ) :
     Prop :=
   ContDiff ℝ ∞ φ ∧
     (∀ p ∈ closure {q | 0 < φ q} ∩ (closure V ×ˢ Icc a b), 0 < dₜ φ p - lapₓ φ p) ∧
-    ∀ p ∈ frontier {q | 0 < φ q} ∩ (closure V ×ˢ Icc a b), ‖gradₓ φ p‖ < Q p.1
+    ∀ p ∈ frontier {q | 0 < φ q} ∩ (closure V ×ˢ Icc a b), 0 < ‖gradₓ φ p‖ ∧ ‖gradₓ φ p‖ < Q p.1
 
 /-! ### Parabolic viscosity solutions -/
 

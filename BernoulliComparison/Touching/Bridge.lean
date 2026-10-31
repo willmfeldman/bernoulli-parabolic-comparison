@@ -17,7 +17,8 @@ Here we prove that they satisfy the pointwise touching alternatives of the class
 test-function definitions of viscosity (relaxed) subsolutions and supersolutions:
 
 * `IsParaRelaxedSub.touching_alt`: if a `C^∞` function `φ` crosses `u` from above in `E` at
-  `p ∈ U × I`, then `(∂ₜφ - Δφ)(p) ≤ 0`, or `φ(p) = 0` and `Q(x₀) ≤ |∇φ(p)|`;
+  `p ∈ U × I`, and `∇φ(p) ≠ 0` when `φ(p) = 0`, then `(∂ₜφ - Δφ)(p) ≤ 0`, or `φ(p) = 0` and
+  `Q(x₀) ≤ |∇φ(p)|`;
 * `IsParaSuper.touching_alt`: if `φ` crosses `v` from below in `U × I` at `p`, then
   `(∂ₜφ - Δφ)(p) ≥ 0`, or `φ(p) = 0` and `|∇φ(p)| ≤ Q(x₀)`.
 
@@ -28,8 +29,8 @@ Suppose both alternatives fail at `p = (x₀, t₀)`. Put
 while `ψ ≥ φ + η r² - c > φ` on the parabolic boundary of `B_r(x₀) × (t₀ - r², t₀]`, where
 `h₁ ≥ r²`. For `η` and then `r` small, `ψ` is a classical strict supersolution on the closed
 cylinder: `∂ₜψ - Δψ = (∂ₜφ - Δφ) + η (∂ₜh₁ - Δh₁) > 0` by continuity, and either `ψ > 0` on the
-closed cylinder (if `φ(p) > 0`), so that `∂{ψ > 0}` misses it, or `|∇ψ| < Q` there (if
-`|∇φ(p)| < Q(x₀)`, using continuity of `Q` at `x₀`). The barrier clause then gives
+closed cylinder (if `φ(p) > 0`), so that `∂{ψ > 0}` misses it, or `0 < |∇ψ| < Q` there (if
+`0 < |∇φ(p)| < Q(x₀)`, using continuity of `Q` at `x₀`). The barrier clause then gives
 `u(p) < ψ(p) = u(p) - c`, a contradiction.
 
 Only the continuity of `Q` at `x₀` is used, and only in the gradient alternative.
@@ -183,12 +184,13 @@ variable {U : Set (E d)} {Q : E d → ℝ} {I : Set ℝ} {u : E d × ℝ → ℝ
   {φ : E d × ℝ → ℝ} {p : E d × ℝ}
 
 /-- Core of the relaxed-subsolution bridge: if `φ` crosses `u` from above in `S` at `p`, the heat
-operator of `φ` at `p` cannot be positive while `φ(p) > 0` or `|∇φ(p)| < Q(x₀)` (the latter
+operator of `φ` at `p` cannot be positive while `φ(p) > 0` or `0 < |∇φ(p)| < Q(x₀)` (the latter
 with `Q` continuous at `x₀`). -/
 theorem IsParaRelaxedSub.false_of_crossesFromAbove (hsub : IsParaRelaxedSub U Q I u S)
     (hU : IsOpen U) (hpU : p.1 ∈ U) (hpI : I ∈ 𝓝[≤] p.2) (hφ : ContDiff ℝ ∞ φ)
     (hcross : CrossesFromAbove S u φ p) (hH : 0 < dₜ φ p - lapₓ φ p)
-    (hfront : 0 < φ p ∨ (ContinuousAt Q p.1 ∧ ‖gradₓ φ p‖ < Q p.1)) : False := by
+    (hfront : 0 < φ p ∨ (ContinuousAt Q p.1 ∧ 0 < ‖gradₓ φ p‖ ∧ ‖gradₓ φ p‖ < Q p.1)) :
+    False := by
   set H := dₜ φ p - lapₓ φ p with hHdef
   have hφ2 : ContDiff ℝ 2 φ := hφ.of_le (by norm_cast)
   have hφ1 : ContDiff ℝ 1 φ := hφ.of_le (by norm_cast)
@@ -204,13 +206,21 @@ theorem IsParaRelaxedSub.false_of_crossesFromAbove (hsub : IsParaRelaxedSub U Q 
       (by linarith)
   -- margin `g` for the free-boundary condition
   obtain ⟨g, hg, hgev⟩ : ∃ g > 0, (∀ᶠ q in 𝓝 p, 2 * g < φ q) ∨
-      (∀ᶠ q in 𝓝 p, ‖gradₓ φ q‖ + 2 * g < Q q.1) := by
-    rcases hfront with hpos | ⟨hQ, hgrad⟩
+      (∀ᶠ q in 𝓝 p, ‖gradₓ φ q‖ + 2 * g < Q q.1 ∧ 2 * g < ‖gradₓ φ q‖) := by
+    rcases hfront with hpos | ⟨hQ, hgrad0, hgrad⟩
     · refine ⟨φ p / 4, by positivity, Or.inl ?_⟩
       exact continuousAt_const.eventually_lt hφ.continuous.continuousAt (by linarith)
-    · refine ⟨(Q p.1 - ‖gradₓ φ p‖) / 4, by linarith, Or.inr ?_⟩
-      exact (((continuous_gradₓ hφ1).norm.add continuous_const).continuousAt).eventually_lt
-        (hQ.comp continuousAt_fst) (by simp only [Pi.add_apply]; linarith)
+    · refine ⟨min (Q p.1 - ‖gradₓ φ p‖) ‖gradₓ φ p‖ / 4,
+        by have := lt_min (sub_pos.2 hgrad) hgrad0; positivity, Or.inr ?_⟩
+      have hm1 := min_le_left (Q p.1 - ‖gradₓ φ p‖) ‖gradₓ φ p‖
+      have hm2 := min_le_right (Q p.1 - ‖gradₓ φ p‖) ‖gradₓ φ p‖
+      have hm0 : 0 < min (Q p.1 - ‖gradₓ φ p‖) ‖gradₓ φ p‖ := lt_min (sub_pos.2 hgrad) hgrad0
+      refine ((((continuous_gradₓ hφ1).norm.add continuous_const).continuousAt).eventually_lt
+        (hQ.comp continuousAt_fst) (by
+          change ‖gradₓ φ p‖ + 2 * (min (Q p.1 - ‖gradₓ φ p‖) ‖gradₓ φ p‖ / 4) < Q p.1
+          linarith)).and ?_
+      exact continuousAt_const.eventually_lt (continuous_gradₓ hφ1).norm.continuousAt
+        (by linarith)
   obtain ⟨η, hη, hηM⟩ := exists_eta hM0 (lt_min (half_pos hH) hg)
   have hηH : η * M < H / 2 := hηM.trans_le (min_le_left _ _)
   have hηg : η * M < g := hηM.trans_le (min_le_right _ _)
@@ -222,9 +232,10 @@ theorem IsParaRelaxedSub.false_of_crossesFromAbove (hsub : IsParaRelaxedSub U Q 
       (∀ q ∈ closedParCyl p.1 p.2 r, (|dₜ h₁ q - lapₓ h₁ q| ≤ M ∧ ‖gradₓ h₁ q‖ ≤ M) ∧
         H / 2 < dₜ φ q - lapₓ φ q) ∧
       ((∀ q ∈ closedParCyl p.1 p.2 r, 2 * g < φ q) ∨
-        (∀ q ∈ closedParCyl p.1 p.2 r, ‖gradₓ φ q‖ + 2 * g < Q q.1)) := by
+        (∀ q ∈ closedParCyl p.1 p.2 r, ‖gradₓ φ q‖ + 2 * g < Q q.1 ∧ 2 * g < ‖gradₓ φ q‖)) := by
     have hfr : ∀ᶠ r in 𝓝[>] (0 : ℝ), ((∀ q ∈ closedParCyl p.1 p.2 r, 2 * g < φ q) ∨
-        (∀ q ∈ closedParCyl p.1 p.2 r, ‖gradₓ φ q‖ + 2 * g < Q q.1)) := by
+        (∀ q ∈ closedParCyl p.1 p.2 r,
+          ‖gradₓ φ q‖ + 2 * g < Q q.1 ∧ 2 * g < ‖gradₓ φ q‖)) := by
       rcases hgev with h | h
       · exact (eventually_forall_closedParCyl h).mono fun r hr ↦ Or.inl hr
       · exact (eventually_forall_closedParCyl h).mono fun r hr ↦ Or.inr hr
@@ -267,12 +278,18 @@ theorem IsParaRelaxedSub.false_of_crossesFromAbove (hsub : IsParaRelaxedSub U Q 
         have hopen : IsOpen {q | 0 < ψ q} := isOpen_lt continuous_const hψ.continuous
         exact hq.1.2 (by rw [hopen.interior_eq]; exact hψq)
       · obtain ⟨⟨-, hG⟩, -⟩ := hbounds q hq.2
+        obtain ⟨hgQ, hg0⟩ := hgrad q hq.2
         rw [hψgrad]
-        calc ‖gradₓ φ q + η • gradₓ h₁ q‖ ≤ ‖gradₓ φ q‖ + η * ‖gradₓ h₁ q‖ := by
-              refine (norm_add_le _ _).trans ?_
-              rw [norm_smul, Real.norm_of_nonneg hη.le]
-          _ ≤ ‖gradₓ φ q‖ + η * M := by gcongr
-          _ < Q q.1 := by linarith [hgrad q hq.2]
+        have hn : ‖η • gradₓ h₁ q‖ ≤ η * M := by
+          rw [norm_smul, Real.norm_of_nonneg hη.le]
+          gcongr
+        refine ⟨?_, ?_⟩
+        · have := norm_sub_norm_le (gradₓ φ q) (-(η • gradₓ h₁ q))
+          rw [sub_neg_eq_add, norm_neg] at this
+          linarith
+        · calc ‖gradₓ φ q + η • gradₓ h₁ q‖ ≤ ‖gradₓ φ q‖ + η * M :=
+                (norm_add_le _ _).trans (by linarith)
+            _ < Q q.1 := by linarith
   -- `u ≺_S ψ` on the parabolic boundary
   have hbdry : PrecOn u ψ S (parBdry (ball p.1 r) (p.2 - r ^ 2) p.2) := by
     rintro q ⟨hqS, hq⟩
@@ -288,10 +305,15 @@ theorem IsParaRelaxedSub.false_of_crossesFromAbove (hsub : IsParaRelaxedSub U Q 
 
 /-- Relaxed-subsolution bridge. If `(u, E)` is a relaxed subsolution, `Q` is continuous at `x₀`, and
 a `C^∞` function `φ` crosses `u` from above in `E` at `p = (x₀, t₀) ∈ U × I` (with `I` containing a
-left neighbourhood of `t₀`), then `(∂ₜφ - Δφ)(p) ≤ 0`, or `φ(p) = 0` and `Q(x₀) ≤ |∇φ(p)|`. -/
+left neighbourhood of `t₀`), with `∇φ(p) ≠ 0` if `φ(p) = 0`, then `(∂ₜφ - Δφ)(p) ≤ 0`, or
+`φ(p) = 0` and `Q(x₀) ≤ |∇φ(p)|`.
+
+The nondegeneracy premise `hnd` reflects that classical strict supersolutions have nonzero
+free-boundary gradient: a test function with `φ(p) = 0` and `∇φ(p) = 0` cannot be
+perturbed into one. -/
 theorem IsParaRelaxedSub.touching_alt (hsub : IsParaRelaxedSub U Q I u S) (hU : IsOpen U)
     (hpU : p.1 ∈ U) (hpI : I ∈ 𝓝[≤] p.2) (hQ : ContinuousAt Q p.1) (hφ : ContDiff ℝ ∞ φ)
-    (hcross : CrossesFromAbove S u φ p) :
+    (hcross : CrossesFromAbove S u φ p) (hnd : φ p = 0 → gradₓ φ p ≠ 0) :
     dₜ φ p - lapₓ φ p ≤ 0 ∨ (φ p = 0 ∧ Q p.1 ≤ ‖gradₓ φ p‖) := by
   by_contra hcon
   simp only [not_or, not_and, not_le] at hcon
@@ -302,7 +324,7 @@ theorem IsParaRelaxedSub.touching_alt (hsub : IsParaRelaxedSub U Q I u S) (hU : 
   rcases hφp.lt_or_eq with hpos | hzero
   · exact hsub.false_of_crossesFromAbove hU hpU hpI hφ hcross hH (Or.inl hpos)
   · exact hsub.false_of_crossesFromAbove hU hpU hpI hφ hcross hH
-      (Or.inr ⟨hQ, hfr hzero.symm⟩)
+      (Or.inr ⟨hQ, norm_pos_iff.2 (hnd hzero.symm), hfr hzero.symm⟩)
 
 /-- Relaxed-subsolution bridge at a positive contact value: no hypothesis on `Q`. -/
 theorem IsParaRelaxedSub.heat_nonpos_of_pos (hsub : IsParaRelaxedSub U Q I u S) (hU : IsOpen U)

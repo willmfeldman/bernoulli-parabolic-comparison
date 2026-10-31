@@ -70,7 +70,9 @@ barriers on test cylinders:
   (`AdmissibleCyl`);
 * a classical strict subsolution (`IsClassicalStrictParaSub`) is a `C^∞` function `φ` on all of
   space-time with `∂ₜφ - Δφ < 0` on `closure {φ > 0}` and `|∇φ| > Q` on `∂{φ > 0}`, both
-  within `V̄ × [a, b]`; a classical strict supersolution reverses both strict inequalities;
+  within `V̄ × [a, b]`; a classical strict supersolution (`IsClassicalStrictParaSuper`) has
+  `∂ₜφ - Δφ > 0` on `closure {φ > 0}` and `0 < |∇φ| < Q` on `∂{φ > 0}`, so its free-boundary
+  gradient is nonzero;
 * `u` is a supersolution (`IsParaSuper`) if it is continuous and nonnegative on `U × I` and no
   classical strict subsolution can cross it from below: whenever `φ ≺ u` on the parabolic
   boundary `∂_P(V × (a, b]) = (V̄ × {a}) ∪ (∂V × [a, b])` of a test cylinder, also `φ ≺ u` in
@@ -123,13 +125,13 @@ def IsClassicalStrictParaSub (Q : E d → ℝ) (φ : E d × ℝ → ℝ) (V : Se
     ∀ p ∈ frontier {q | 0 < φ q} ∩ (closure V ×ˢ Icc a b), Q p.1 < ‖gradₓ φ p‖
 
 /-- `φ` is a classical strict supersolution on `V̄ × [a, b]`: `φ` is `C^∞` on space-time,
-`∂ₜφ - Δφ > 0` on `closure {φ > 0} ∩ (V̄ × [a, b])`, and `|∇φ| < Q` on
+`∂ₜφ - Δφ > 0` on `closure {φ > 0} ∩ (V̄ × [a, b])`, and `0 < |∇φ| < Q` on
 `∂{φ > 0} ∩ (V̄ × [a, b])`. -/
 def IsClassicalStrictParaSuper (Q : E d → ℝ) (φ : E d × ℝ → ℝ) (V : Set (E d)) (a b : ℝ) :
     Prop :=
   ContDiff ℝ ∞ φ ∧
     (∀ p ∈ closure {q | 0 < φ q} ∩ (closure V ×ˢ Icc a b), 0 < dₜ φ p - lapₓ φ p) ∧
-    ∀ p ∈ frontier {q | 0 < φ q} ∩ (closure V ×ˢ Icc a b), ‖gradₓ φ p‖ < Q p.1
+    ∀ p ∈ frontier {q | 0 < φ q} ∩ (closure V ×ˢ Icc a b), 0 < ‖gradₓ φ p‖ ∧ ‖gradₓ φ p‖ < Q p.1
 
 /-- **Supersolution** in `U × I`. `u` is continuous and nonnegative on `U × I`, and for every
 test cylinder `V × (a, b]` and every classical strict subsolution `φ` on `V̄ × [a, b]`, if
