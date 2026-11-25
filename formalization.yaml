@@ -6,27 +6,26 @@ description: >
   d{u > 0}, on U x (0, T] with U bounded and open and Q Lipschitz and
   positive: a supersolution and a relaxed subsolution that are strictly
   ordered near the parabolic boundary stay strictly ordered.
-lean_toolchain: leanprover/lean4:v4.35.0-rc3
-mathlib: v4.35.0-rc3
+lean_toolchain: leanprover/lean4:v4.36.0
+mathlib: v4.36.0
 dependencies:
   - name: parabolic_basic_theory
     url: https://github.com/willmfeldman/parabolic-basic-theory
-    rev: v0.3.0
-    commit: 1f685e27f2c8882b3f7bf3122436068a0c7f2584
+    rev: v0.4.0
+    commit: f83a3a65c63f2fa5a48245259ae577a21391053f
   # viscosity_solns and AleksandrovDifferentiability come in through parabolic_basic_theory.
   - name: viscosity_solns
     url: https://github.com/willmfeldman/viscosity-solution-theory
-    rev: v0.4.0
-    commit: b9dc82d59e19c5689b6669b41e0c59168c1cdc84
+    rev: v0.5.0
+    commit: e34fe7ee502d572c7d2933209c46212e4652af89
   - name: AleksandrovDifferentiability
     url: https://github.com/willmfeldman/aleksandrov-differentiability
-    rev: v0.4.0
-    commit: 5e5c2ec4cee4f8851387e9bb309eeb703cd72a25
-# Comparator tool revisions pinned in scripts/release-comparator.sh.
+    rev: v0.5.0
+    commit: 058378f1033dfd842b52b611497996fc92b28a2f
+# The comparator is the toolchain's `lake comparator` (scripts/release-comparator.sh); the
+# toolchain pin above is the tool pin.
 comparator:
-  comparator_revision: fd5d5bcf14177b187f66d4502071268d877887c3
-  lean4export_revision: 66f1fb4bc256072069767fce52d39480e4524869
-  landrun_revision: 811cfff51ceaf3d9843708aa6d22e9b84ccac8b4
+  engine: "lake comparator"
 permitted_axioms: [propext, Quot.sound, Classical.choice]
 automation:
   methods:
@@ -92,7 +91,7 @@ targets:
       subsolution for Q - L l on the shrunken domain, and inf-convolution maps
       a supersolution for Q to a supersolution for Q + L l, where L is the
       Lipschitz constant of Q.
-    challenge: challenges/convolution
+    challenge: challenges/comparison
     challenge_theorems:
       - BernoulliComparison.challenge_supConv
       - BernoulliComparison.challenge_infConv
@@ -115,7 +114,7 @@ targets:
       BernoulliComparison.Touching.ClassBridge) give the free-boundary
       alternatives: at a touching point either the heat inequality holds or
       the test function vanishes there with the gradient bound against Q.
-    challenge: challenges/heat-bridge
+    challenge: challenges/comparison
     challenge_theorems:
       - BernoulliComparison.challenge_subcaloric
       - BernoulliComparison.challenge_supercaloric

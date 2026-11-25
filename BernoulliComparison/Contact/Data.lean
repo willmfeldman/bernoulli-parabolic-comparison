@@ -205,13 +205,13 @@ def c₁ : ℝ := P.cSub C.xstar
 def c₂ : ℝ := P.cSuper C.xstar
 
 /-- `W⋆ = B_{2λ}(x⋆)`. -/
-def Wstar : Set (E d) := P.Wstar C.xstar
+noncomputable def Wstar : Set (E d) := P.Wstar C.xstar
 
 /-- `O = (W⋆ ∩ U) × (0, T]`. -/
-def O : Set (E d × ℝ) := P.O C.xstar
+noncomputable def O : Set (E d × ℝ) := P.O C.xstar
 
 /-- `O₀ = (W⋆ ∩ U₀) × (0, T]`. -/
-def O₀ : Set (E d × ℝ) := P.O₀ C.xstar
+noncomputable def O₀ : Set (E d × ℝ) := P.O₀ C.xstar
 
 theorem ctr₁_eq : C.ctr₁ = C.q₁ + (0, P.μ) := rfl
 

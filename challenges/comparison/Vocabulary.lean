@@ -166,3 +166,98 @@ def IsParaRelaxedSub (U : Set (E d)) (Q : E d → ℝ) (I : Set ℝ) (u : E d ×
         PrecOn u φ Eset (cyl V a b)
 
 end BernoulliComparison
+
+/-!
+# Challenge vocabulary: sup- and inf-convolutions over a kernel
+
+Part of the trusted statement surface; imports `Mathlib` only (earlier in this file).
+Restates, token for token, definitions of the library file
+`BernoulliComparison/Convolution/Basic.lean`.
+
+For a set `K ⊆ ℝᵈ × ℝ` (the kernel; compact and nonempty in the challenge) and
+`w : ℝᵈ × ℝ → ℝ`:
+
+* `supConv K w p = sup_{k ∈ K} w (p + k)` and `infConv K w p = inf_{k ∈ K} w (p + k)`
+  (Mathlib's conditionally complete `sSup`/`sInf` of the image of `K`);
+* `reachSet K E = {p | ∃ k ∈ K, p + k ∈ E}` (the set `E - K`);
+* `setConv D' K E = D' ∩ reachSet K E`, the convolved set restricted to the target box `D'`.
+-/
+
+open Set Filter Topology Pointwise
+
+namespace BernoulliComparison
+
+variable {d : ℕ}
+
+/-- The sup-convolution `w^K(p) = sup_{k ∈ K} w (p + k)`. -/
+noncomputable def supConv (K : Set (E d × ℝ)) (w : E d × ℝ → ℝ) (p : E d × ℝ) : ℝ :=
+  sSup ((fun k ↦ w (p + k)) '' K)
+
+/-- The inf-convolution `w_K(p) = inf_{k ∈ K} w (p + k)`. -/
+noncomputable def infConv (K : Set (E d × ℝ)) (w : E d × ℝ → ℝ) (p : E d × ℝ) : ℝ :=
+  sInf ((fun k ↦ w (p + k)) '' K)
+
+/-- The points `p` whose translate `p + K` meets `Eset`, i.e. `Eset - K`. -/
+def reachSet (K Eset : Set (E d × ℝ)) : Set (E d × ℝ) :=
+  {p | ∃ k ∈ K, p + k ∈ Eset}
+
+/-- The convolved set `D' ∩ (Eset - K)`, for the target box `D'`. -/
+def setConv (D' K Eset : Set (E d × ℝ)) : Set (E d × ℝ) :=
+  D' ∩ reachSet K Eset
+
+end BernoulliComparison
+
+/-!
+# Challenge vocabulary: viscosity sub- and supersolutions of the heat equation
+
+Part of the trusted statement surface; imports `Mathlib` only (earlier in this file).
+Restates, token for token, definitions of the library file
+`BernoulliComparison/Touching/Crossing.lean`.
+
+This is the standard notion of viscosity solution of the heat equation `∂ₜu = Δu` for parabolic
+problems (Crandall–Ishii–Lions, §8), with test functions touching on backward parabolic
+cylinders:
+
+* `parCyl x t r = B_r(x) × (t - r², t]` is the backward parabolic cylinder (Euclidean ball in
+  `ℝᵈ`); only the past of the touching point is used.
+* `φ` crosses `u` from above in `S` at `p` if `p ∈ S`, `u p = φ p`, and `u ≤ φ` on
+  `S ∩ parCyl p r` for some `r > 0` (from below: `φ ≤ u` there).
+* `IsCaloricSub O u`: for every globally `C^∞` test function `φ` crossing `u` from above in `O`
+  at `p`, `∂ₜφ(p) - Δₓφ(p) ≤ 0`. `IsCaloricSuper O u`: for every `C^∞` `φ` crossing `u` from
+  below in `O` at `p`, `∂ₜφ(p) - Δₓφ(p) ≥ 0`.
+
+No continuity is built into `IsCaloricSub`/`IsCaloricSuper`; in the challenge, the continuity of
+`u` on `U × I` is part of the hypothesis.
+-/
+
+open Set Filter Topology Metric
+open scoped ContDiff
+
+namespace BernoulliComparison
+
+variable {d : ℕ}
+
+/-- The backward parabolic cylinder `B_r(x) × (t - r², t]`. -/
+noncomputable def parCyl (x : E d) (t r : ℝ) : Set (E d × ℝ) := ball x r ×ˢ Ioc (t - r ^ 2) t
+
+/-- `φ` crosses (touches) `u` from above in `S` at `p`: `p ∈ S`, `u p = φ p`, and `u ≤ φ` on
+`S ∩ parCyl p.1 p.2 r` for some `r > 0`. -/
+def CrossesFromAbove (S : Set (E d × ℝ)) (u φ : E d × ℝ → ℝ) (p : E d × ℝ) : Prop :=
+  p ∈ S ∧ u p = φ p ∧ ∃ r > 0, ∀ q ∈ S ∩ parCyl p.1 p.2 r, u q ≤ φ q
+
+/-- `φ` crosses (touches) `u` from below in `S` at `p`: `p ∈ S`, `u p = φ p`, and `φ ≤ u` on
+`S ∩ parCyl p.1 p.2 r` for some `r > 0`. -/
+def CrossesFromBelow (S : Set (E d × ℝ)) (u φ : E d × ℝ → ℝ) (p : E d × ℝ) : Prop :=
+  p ∈ S ∧ u p = φ p ∧ ∃ r > 0, ∀ q ∈ S ∩ parCyl p.1 p.2 r, φ q ≤ u q
+
+/-- Viscosity subsolution of the heat equation in `O`: whenever a `C^∞` function `φ` crosses `u`
+from above in `O` at `p`, `∂ₜφ(p) - Δₓφ(p) ≤ 0`. -/
+def IsCaloricSub (O : Set (E d × ℝ)) (u : E d × ℝ → ℝ) : Prop :=
+  ∀ φ : E d × ℝ → ℝ, ContDiff ℝ ∞ φ → ∀ p, CrossesFromAbove O u φ p → dₜ φ p - lapₓ φ p ≤ 0
+
+/-- Viscosity supersolution of the heat equation in `O`: whenever a `C^∞` function `φ` crosses
+`u` from below in `O` at `p`, `∂ₜφ(p) - Δₓφ(p) ≥ 0`. -/
+def IsCaloricSuper (O : Set (E d × ℝ)) (u : E d × ℝ → ℝ) : Prop :=
+  ∀ φ : E d × ℝ → ℝ, ContDiff ℝ ∞ φ → ∀ p, CrossesFromBelow O u φ p → 0 ≤ dₜ φ p - lapₓ φ p
+
+end BernoulliComparison

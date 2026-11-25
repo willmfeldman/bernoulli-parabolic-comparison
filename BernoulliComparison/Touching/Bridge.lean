@@ -51,7 +51,8 @@ variable {d : ℕ}
 /-! ### Closed backward cylinders -/
 
 /-- The closed backward cylinder `B̄_r(x) × [t - r², t]`. -/
-def closedParCyl (x : E d) (t r : ℝ) : Set (E d × ℝ) := closedBall x r ×ˢ Icc (t - r ^ 2) t
+noncomputable def closedParCyl (x : E d) (t r : ℝ) : Set (E d × ℝ) :=
+  closedBall x r ×ˢ Icc (t - r ^ 2) t
 
 theorem mem_closedParCyl {x : E d} {t r : ℝ} {q : E d × ℝ} :
     q ∈ closedParCyl x t r ↔ dist q.1 x ≤ r ∧ t - r ^ 2 ≤ q.2 ∧ q.2 ≤ t := by

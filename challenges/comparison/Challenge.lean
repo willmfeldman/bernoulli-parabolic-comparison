@@ -168,6 +168,101 @@ def IsParaRelaxedSub (U : Set (E d)) (Q : E d → ℝ) (I : Set ℝ) (u : E d ×
         PrecOn u φ Eset (cyl V a b)
 
 end BernoulliComparison
+
+/-!
+# Challenge vocabulary: sup- and inf-convolutions over a kernel
+
+Part of the trusted statement surface; imports `Mathlib` only (earlier in this file).
+Restates, token for token, definitions of the library file
+`BernoulliComparison/Convolution/Basic.lean`.
+
+For a set `K ⊆ ℝᵈ × ℝ` (the kernel; compact and nonempty in the challenge) and
+`w : ℝᵈ × ℝ → ℝ`:
+
+* `supConv K w p = sup_{k ∈ K} w (p + k)` and `infConv K w p = inf_{k ∈ K} w (p + k)`
+  (Mathlib's conditionally complete `sSup`/`sInf` of the image of `K`);
+* `reachSet K E = {p | ∃ k ∈ K, p + k ∈ E}` (the set `E - K`);
+* `setConv D' K E = D' ∩ reachSet K E`, the convolved set restricted to the target box `D'`.
+-/
+
+open Set Filter Topology Pointwise
+
+namespace BernoulliComparison
+
+variable {d : ℕ}
+
+/-- The sup-convolution `w^K(p) = sup_{k ∈ K} w (p + k)`. -/
+noncomputable def supConv (K : Set (E d × ℝ)) (w : E d × ℝ → ℝ) (p : E d × ℝ) : ℝ :=
+  sSup ((fun k ↦ w (p + k)) '' K)
+
+/-- The inf-convolution `w_K(p) = inf_{k ∈ K} w (p + k)`. -/
+noncomputable def infConv (K : Set (E d × ℝ)) (w : E d × ℝ → ℝ) (p : E d × ℝ) : ℝ :=
+  sInf ((fun k ↦ w (p + k)) '' K)
+
+/-- The points `p` whose translate `p + K` meets `Eset`, i.e. `Eset - K`. -/
+def reachSet (K Eset : Set (E d × ℝ)) : Set (E d × ℝ) :=
+  {p | ∃ k ∈ K, p + k ∈ Eset}
+
+/-- The convolved set `D' ∩ (Eset - K)`, for the target box `D'`. -/
+def setConv (D' K Eset : Set (E d × ℝ)) : Set (E d × ℝ) :=
+  D' ∩ reachSet K Eset
+
+end BernoulliComparison
+
+/-!
+# Challenge vocabulary: viscosity sub- and supersolutions of the heat equation
+
+Part of the trusted statement surface; imports `Mathlib` only (earlier in this file).
+Restates, token for token, definitions of the library file
+`BernoulliComparison/Touching/Crossing.lean`.
+
+This is the standard notion of viscosity solution of the heat equation `∂ₜu = Δu` for parabolic
+problems (Crandall–Ishii–Lions, §8), with test functions touching on backward parabolic
+cylinders:
+
+* `parCyl x t r = B_r(x) × (t - r², t]` is the backward parabolic cylinder (Euclidean ball in
+  `ℝᵈ`); only the past of the touching point is used.
+* `φ` crosses `u` from above in `S` at `p` if `p ∈ S`, `u p = φ p`, and `u ≤ φ` on
+  `S ∩ parCyl p r` for some `r > 0` (from below: `φ ≤ u` there).
+* `IsCaloricSub O u`: for every globally `C^∞` test function `φ` crossing `u` from above in `O`
+  at `p`, `∂ₜφ(p) - Δₓφ(p) ≤ 0`. `IsCaloricSuper O u`: for every `C^∞` `φ` crossing `u` from
+  below in `O` at `p`, `∂ₜφ(p) - Δₓφ(p) ≥ 0`.
+
+No continuity is built into `IsCaloricSub`/`IsCaloricSuper`; in the challenge, the continuity of
+`u` on `U × I` is part of the hypothesis.
+-/
+
+open Set Filter Topology Metric
+open scoped ContDiff
+
+namespace BernoulliComparison
+
+variable {d : ℕ}
+
+/-- The backward parabolic cylinder `B_r(x) × (t - r², t]`. -/
+noncomputable def parCyl (x : E d) (t r : ℝ) : Set (E d × ℝ) := ball x r ×ˢ Ioc (t - r ^ 2) t
+
+/-- `φ` crosses (touches) `u` from above in `S` at `p`: `p ∈ S`, `u p = φ p`, and `u ≤ φ` on
+`S ∩ parCyl p.1 p.2 r` for some `r > 0`. -/
+def CrossesFromAbove (S : Set (E d × ℝ)) (u φ : E d × ℝ → ℝ) (p : E d × ℝ) : Prop :=
+  p ∈ S ∧ u p = φ p ∧ ∃ r > 0, ∀ q ∈ S ∩ parCyl p.1 p.2 r, u q ≤ φ q
+
+/-- `φ` crosses (touches) `u` from below in `S` at `p`: `p ∈ S`, `u p = φ p`, and `φ ≤ u` on
+`S ∩ parCyl p.1 p.2 r` for some `r > 0`. -/
+def CrossesFromBelow (S : Set (E d × ℝ)) (u φ : E d × ℝ → ℝ) (p : E d × ℝ) : Prop :=
+  p ∈ S ∧ u p = φ p ∧ ∃ r > 0, ∀ q ∈ S ∩ parCyl p.1 p.2 r, φ q ≤ u q
+
+/-- Viscosity subsolution of the heat equation in `O`: whenever a `C^∞` function `φ` crosses `u`
+from above in `O` at `p`, `∂ₜφ(p) - Δₓφ(p) ≤ 0`. -/
+def IsCaloricSub (O : Set (E d × ℝ)) (u : E d × ℝ → ℝ) : Prop :=
+  ∀ φ : E d × ℝ → ℝ, ContDiff ℝ ∞ φ → ∀ p, CrossesFromAbove O u φ p → dₜ φ p - lapₓ φ p ≤ 0
+
+/-- Viscosity supersolution of the heat equation in `O`: whenever a `C^∞` function `φ` crosses
+`u` from below in `O` at `p`, `∂ₜφ(p) - Δₓφ(p) ≥ 0`. -/
+def IsCaloricSuper (O : Set (E d × ℝ)) (u : E d × ℝ → ℝ) : Prop :=
+  ∀ φ : E d × ℝ → ℝ, ContDiff ℝ ∞ φ → ∀ p, CrossesFromBelow O u φ p → 0 ≤ dₜ φ p - lapₓ φ p
+
+end BernoulliComparison
 -- END GENERATED VOCABULARY
 
 /-!
@@ -187,7 +282,21 @@ barriers, and the solution notions `IsParaSuper`, `IsParaSub`, `IsParaRelaxedSub
 The third statement, `challenge_model_sanity`, is a non-vacuity and sign-convention check of these
 solution classes, not a headline result.
 
-Common hypotheses of both statements:
+Four supporting statements follow, about two ingredients of the proof. They use further
+vocabulary, restated above from `Convolution/Basic.lean` (sup- and inf-convolution over a kernel)
+and `Touching/Crossing.lean` (backward parabolic cylinders and viscosity solutions of the heat
+equation):
+
+* `challenge_supConv`, `challenge_infConv`: sup- and inf-convolution over a compact kernel `K`
+  containing `0` preserve the solution classes, with the free-boundary coefficient degraded by
+  `Lℓ` (`L` the Lipschitz constant of `Q`, `ℓ` a bound on the spatial part of `K`);
+* `challenge_subcaloric`, `challenge_supercaloric`: a relaxed subsolution is a viscosity
+  subsolution of the heat equation, and a supersolution is a viscosity supersolution of the heat
+  equation in its positivity set, for `C^∞` test functions touching from the past.
+
+Their hypotheses are listed in the section docstrings below.
+
+Common hypotheses of the two comparison statements:
 
 * `U ⊆ ℝᵈ` is open and bounded; `T > 0`;
 * `Q` is Lipschitz on `Ū` and bounded below on `Ū` by a positive constant;
@@ -282,6 +391,90 @@ theorem challenge_model_sanity (d : ℕ) :
         IsParaSuper U Q I (fun _ ↦ c)) ∧
       (∀ (U : Set (E d)) (Q : E d → ℝ) (I : Set ℝ), IsParaRelaxedSub U Q I (fun _ ↦ 0) ∅) ∧
       ∀ Q : E d → ℝ, ¬ IsParaSuper (ball (0 : E d) 2) Q (Ioc 0 1) (fun p ↦ 1 - p.2 / 2) := by
+  sorry
+
+/-!
+## Supporting statements: sup- and inf-convolution preserve the solution classes
+
+Let `U, U' ⊆ ℝᵈ`, `α < β`, `α' < β'`, and let `K ⊆ ℝᵈ × ℝ` be a compact kernel containing `0`
+whose points have spatial part of norm at most `ℓ`. Assume the translation conditions
+
+* `(Ū' × [α', β']) + K ⊆ Ū × [α, β]` and `(U' × (α', β']) + K ⊆ U × (α, β]`,
+
+that `U` is bounded, and that `Q` is `L`-Lipschitz on `Ū`. Then:
+
+* `challenge_supConv`: if `(u, E)` is a relaxed subsolution for `Q` in `U × (α, β]` and `u` is
+  continuous on `Ū × [α, β]`, then `(u^K, E^K)` is a relaxed subsolution for `Q - Lℓ` in
+  `U' × (α', β']`, where `u^K = supConv K u` and `E^K = (Ū' × [α', β']) ∩ (E - K)`.
+* `challenge_infConv`: if `v` is a supersolution for `Q` in `U × (α, β]`, continuous on
+  `Ū × [α, β]`, then `v_K = infConv K v` is a supersolution for `Q + Lℓ` in `U' × (α', β']`.
+
+The free-boundary condition degrades by `Lℓ` because translating a barrier by `k ∈ K` moves `Q`
+by at most `L‖k.1‖ ≤ Lℓ`.
+
+All hypotheses are stated individually; the library bundles the kernel and translation
+conditions into a structure `ConvStep`, which the solution assembles from them.
+-/
+
+/-- **Sup-convolution preserves relaxed subsolutions**, with `Q` replaced by `Q - Lℓ`. -/
+theorem challenge_supConv {U U' : Set (E d)} {α β α' β' : ℝ} {K : Set (E d × ℝ)}
+    {Q : E d → ℝ} {u : E d × ℝ → ℝ} {Eset : Set (E d × ℝ)} {L : NNReal} {ℓ : ℝ}
+    (hu : IsParaRelaxedSub U Q (Ioc α β) u Eset) (hcont : ContinuousOn u (closure U ×ˢ Icc α β))
+    (hU : Bornology.IsBounded U) (hαβ : α < β) (hαβ' : α' < β') (hK : IsCompact K)
+    (h0K : (0 : E d × ℝ) ∈ K) (hKℓ : ∀ k ∈ K, ‖k.1‖ ≤ ℓ)
+    (hclosed : ∀ p ∈ closure U' ×ˢ Icc α' β', ∀ k ∈ K, p + k ∈ closure U ×ˢ Icc α β)
+    (hopen : ∀ p ∈ U' ×ˢ Ioc α' β', ∀ k ∈ K, p + k ∈ U ×ˢ Ioc α β)
+    (hQ : LipschitzOnWith L Q (closure U)) :
+    IsParaRelaxedSub U' (fun x ↦ Q x - L * ℓ) (Ioc α' β') (supConv K u)
+      (setConv (closure U' ×ˢ Icc α' β') K Eset) := by
+  sorry
+
+/-- **Inf-convolution preserves supersolutions**, with `Q` replaced by `Q + Lℓ`. -/
+theorem challenge_infConv {U U' : Set (E d)} {α β α' β' : ℝ} {K : Set (E d × ℝ)}
+    {Q : E d → ℝ} {v : E d × ℝ → ℝ} {L : NNReal} {ℓ : ℝ}
+    (hv : IsParaSuper U Q (Ioc α β) v) (hcont : ContinuousOn v (closure U ×ˢ Icc α β))
+    (hU : Bornology.IsBounded U) (hαβ : α < β) (hαβ' : α' < β') (hK : IsCompact K)
+    (h0K : (0 : E d × ℝ) ∈ K) (hKℓ : ∀ k ∈ K, ‖k.1‖ ≤ ℓ)
+    (hclosed : ∀ p ∈ closure U' ×ˢ Icc α' β', ∀ k ∈ K, p + k ∈ closure U ×ˢ Icc α β)
+    (hopen : ∀ p ∈ U' ×ˢ Ioc α' β', ∀ k ∈ K, p + k ∈ U ×ˢ Ioc α β)
+    (hQ : LipschitzOnWith L Q (closure U)) :
+    IsParaSuper U' (fun x ↦ Q x + L * ℓ) (Ioc α' β') (infConv K v) := by
+  sorry
+
+/-!
+## Supporting statements: barrier solutions are viscosity solutions of the heat equation
+
+The solution classes of the parabolic Bernoulli problem are defined by comparison with smooth
+strict barriers on cylinders. These statements certify that they satisfy the heat equation in
+the standard viscosity sense, with `C^∞` test functions touching on backward parabolic
+cylinders. Let `U ⊆ ℝᵈ` be open and let the time set `I ⊆ ℝ` contain a left neighbourhood of
+each of its points (e.g. `I = (0, T]`). For any `Q`:
+
+* `challenge_subcaloric`: if `(u, E)` is a relaxed subsolution in `U × I`, then `u` is a
+  viscosity subsolution of the heat equation in all of `U × I`, including the zero set of `u`.
+* `challenge_supercaloric`: if `v` is a supersolution in `U × I`, then `v` is a viscosity
+  supersolution of the heat equation in its positivity set `{v > 0} ∩ (U × I)`.
+
+Neither statement involves the free-boundary condition `Q` in its conclusion: the content is that
+the barrier definitions encode the heat equation in the interior of the positive phase (and, for
+subsolutions, across the zero set).
+-/
+
+/-- **Relaxed subsolutions are subcaloric.** If `(u, E)` is a relaxed subsolution of the
+parabolic Bernoulli problem in `U × I`, with `U` open and `I` containing a left neighbourhood of
+each of its points, then `u` is a viscosity subsolution of the heat equation in `U × I`. -/
+theorem challenge_subcaloric {U : Set (E d)} {Q : E d → ℝ} {I : Set ℝ} {u : E d × ℝ → ℝ}
+    {S : Set (E d × ℝ)} (hsub : IsParaRelaxedSub U Q I u S) (hU : IsOpen U)
+    (hI : ∀ t ∈ I, I ∈ 𝓝[≤] t) : IsCaloricSub (U ×ˢ I) u := by
+  sorry
+
+/-- **Supersolutions are supercaloric where positive.** If `v` is a supersolution of the
+parabolic Bernoulli problem in `U × I`, with `U` open and `I` containing a left neighbourhood of
+each of its points, then `v` is a viscosity supersolution of the heat equation in
+`{v > 0} ∩ (U × I)`. -/
+theorem challenge_supercaloric {U : Set (E d)} {Q : E d → ℝ} {I : Set ℝ} {v : E d × ℝ → ℝ}
+    (hsup : IsParaSuper U Q I v) (hU : IsOpen U) (hI : ∀ t ∈ I, I ∈ 𝓝[≤] t) :
+    IsCaloricSuper (posSetP v (U ×ˢ I)) v := by
   sorry
 
 end BernoulliComparison

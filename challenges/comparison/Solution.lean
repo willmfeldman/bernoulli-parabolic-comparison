@@ -15,6 +15,11 @@ caloric paraboloid `Barriers.paraboloid` plus a multiple of `t`, so that the hea
 spatial gradient come from `Barriers.dₜ_sub_lapₓ_paraboloid`, `Barriers.gradₓ_paraboloid` and the
 linearity lemmas of `Touching/Calculus.lean`. The positive constant is handled by a classical
 maximum principle on the closed cylinder.
+
+The supporting statements apply the library theorems directly: `IsParaRelaxedSub.supConv` and
+`IsParaSuper.infConv` (`Convolution/Preservation.lean`), with the library's convolution-step
+structure `ConvStep` assembled from the individual hypotheses, and
+`IsParaRelaxedSub.subcaloric` and `IsParaSuper.supercaloric_on_pos` (`Touching/Caloric.lean`).
 -/
 
 open Set Filter Topology Metric
@@ -176,7 +181,7 @@ private theorem const_super (U : Set (E d)) (Q : E d → ℝ) (I : Set ℝ) {c :
     exact (hbd q ⟨hqcl, Or.inr ⟨⟨hqD.1, by rwa [hVo.interior_eq]⟩, hqD.2⟩⟩).not_ge hq
   have hq2 : a < q.2 :=
     lt_of_le_of_ne hqD.2.1 fun h ↦ (hbd q ⟨hqcl, Or.inl ⟨hqD.1, h.symm⟩⟩).not_ge hq
-  have hheat := hφ.2.1 q ⟨closure_mono (fun r hr ↦ hr.2) hqcl, hqD⟩
+  have hheat := hφ.2.1 q ⟨closure_mono (fun r (hr : r ∈ posSetP φ univ) ↦ hr.2) hqcl, hqD⟩
   have hφ2 : ContDiff ℝ 2 φ := hφ.1.of_le (by norm_cast)
   -- second-order conditions at the maximum, applied to `-φ`
   have h1 : 0 ≤ lapₓ (fun r ↦ -1 * φ r) q := by
@@ -282,5 +287,38 @@ theorem challenge_model_sanity (d : ℕ) :
   ⟨barrier_super, barrier_frontier_nonempty, barrier_sub, sub_barrier_frontier_nonempty,
     fun U Q I _ hc ↦ const_super U Q I hc,
     zero_relaxedSub, decreasing_not_super⟩
+
+theorem challenge_supConv {U U' : Set (E d)} {α β α' β' : ℝ} {K : Set (E d × ℝ)}
+    {Q : E d → ℝ} {u : E d × ℝ → ℝ} {Eset : Set (E d × ℝ)} {L : NNReal} {ℓ : ℝ}
+    (hu : IsParaRelaxedSub U Q (Ioc α β) u Eset) (hcont : ContinuousOn u (closure U ×ˢ Icc α β))
+    (hU : Bornology.IsBounded U) (hαβ : α < β) (hαβ' : α' < β') (hK : IsCompact K)
+    (h0K : (0 : E d × ℝ) ∈ K) (hKℓ : ∀ k ∈ K, ‖k.1‖ ≤ ℓ)
+    (hclosed : ∀ p ∈ closure U' ×ˢ Icc α' β', ∀ k ∈ K, p + k ∈ closure U ×ˢ Icc α β)
+    (hopen : ∀ p ∈ U' ×ˢ Ioc α' β', ∀ k ∈ K, p + k ∈ U ×ˢ Ioc α β)
+    (hQ : LipschitzOnWith L Q (closure U)) :
+    IsParaRelaxedSub U' (fun x ↦ Q x - L * ℓ) (Ioc α' β') (supConv K u)
+      (setConv (closure U' ×ˢ Icc α' β') K Eset) :=
+  hu.supConv hcont ⟨hU, hαβ, hαβ', hK, ⟨0, h0K⟩, hclosed, hopen⟩ h0K hKℓ hQ
+
+theorem challenge_infConv {U U' : Set (E d)} {α β α' β' : ℝ} {K : Set (E d × ℝ)}
+    {Q : E d → ℝ} {v : E d × ℝ → ℝ} {L : NNReal} {ℓ : ℝ}
+    (hv : IsParaSuper U Q (Ioc α β) v) (hcont : ContinuousOn v (closure U ×ˢ Icc α β))
+    (hU : Bornology.IsBounded U) (hαβ : α < β) (hαβ' : α' < β') (hK : IsCompact K)
+    (h0K : (0 : E d × ℝ) ∈ K) (hKℓ : ∀ k ∈ K, ‖k.1‖ ≤ ℓ)
+    (hclosed : ∀ p ∈ closure U' ×ˢ Icc α' β', ∀ k ∈ K, p + k ∈ closure U ×ˢ Icc α β)
+    (hopen : ∀ p ∈ U' ×ˢ Ioc α' β', ∀ k ∈ K, p + k ∈ U ×ˢ Ioc α β)
+    (hQ : LipschitzOnWith L Q (closure U)) :
+    IsParaSuper U' (fun x ↦ Q x + L * ℓ) (Ioc α' β') (infConv K v) :=
+  hv.infConv hcont ⟨hU, hαβ, hαβ', hK, ⟨0, h0K⟩, hclosed, hopen⟩ h0K hKℓ hQ
+
+theorem challenge_subcaloric {U : Set (E d)} {Q : E d → ℝ} {I : Set ℝ} {u : E d × ℝ → ℝ}
+    {S : Set (E d × ℝ)} (hsub : IsParaRelaxedSub U Q I u S) (hU : IsOpen U)
+    (hI : ∀ t ∈ I, I ∈ 𝓝[≤] t) : IsCaloricSub (U ×ˢ I) u :=
+  hsub.subcaloric hU hI
+
+theorem challenge_supercaloric {U : Set (E d)} {Q : E d → ℝ} {I : Set ℝ} {v : E d × ℝ → ℝ}
+    (hsup : IsParaSuper U Q I v) (hU : IsOpen U) (hI : ∀ t ∈ I, I ∈ 𝓝[≤] t) :
+    IsCaloricSuper (posSetP v (U ×ˢ I)) v :=
+  hsup.supercaloric_on_pos hU hI
 
 end BernoulliComparison

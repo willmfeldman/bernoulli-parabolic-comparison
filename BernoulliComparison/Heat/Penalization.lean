@@ -6,6 +6,7 @@ Authors: William M. Feldman
 module
 
 public import BernoulliComparison.Heat.Local
+public import Mathlib.Analysis.Calculus.Deriv.Inv
 
 /-!
 # The penalization `ε / (T₁ - t)`

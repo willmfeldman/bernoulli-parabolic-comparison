@@ -4,7 +4,11 @@
   "theorem_names": [
     "BernoulliComparison.challenge_relaxed_comparison",
     "BernoulliComparison.challenge_strict_comparison",
-    "BernoulliComparison.challenge_model_sanity"
+    "BernoulliComparison.challenge_model_sanity",
+    "BernoulliComparison.challenge_supConv",
+    "BernoulliComparison.challenge_infConv",
+    "BernoulliComparison.challenge_subcaloric",
+    "BernoulliComparison.challenge_supercaloric"
   ],
   "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
   "enable_nanoda": false

@@ -41,7 +41,7 @@ variable {d : ℕ}
 /-! ### Backward parabolic cylinders -/
 
 /-- The backward parabolic cylinder `Q_r(x, t) = B_r(x) × (t - r², t]` (Euclidean ball in `E d`). -/
-def parCyl (x : E d) (t r : ℝ) : Set (E d × ℝ) := ball x r ×ˢ Ioc (t - r ^ 2) t
+noncomputable def parCyl (x : E d) (t r : ℝ) : Set (E d × ℝ) := ball x r ×ˢ Ioc (t - r ^ 2) t
 
 theorem mem_parCyl {x : E d} {t r : ℝ} {q : E d × ℝ} :
     q ∈ parCyl x t r ↔ dist q.1 x < r ∧ t - r ^ 2 < q.2 ∧ q.2 ≤ t := by

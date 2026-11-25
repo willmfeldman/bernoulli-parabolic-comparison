@@ -43,13 +43,13 @@ variable {d : ℕ} {U : Set (E d)} {Q : E d → ℝ} {T : ℝ} {u v : E d × ℝ
   {Eset : Set (E d × ℝ)} (P : Config U Q T u v Eset)
 
 /-- `W⋆ = B_{2λ}(x⋆)`. -/
-def Wstar (xstar : E d) : Set (E d) := ball xstar (2 * P.lam)
+noncomputable def Wstar (xstar : E d) : Set (E d) := ball xstar (2 * P.lam)
 
 /-- `O = (W⋆ ∩ U) × (0, T]` (the raw level). -/
-def O (xstar : E d) : Set (E d × ℝ) := (P.Wstar xstar ∩ U) ×ˢ Ioc 0 T
+noncomputable def O (xstar : E d) : Set (E d × ℝ) := (P.Wstar xstar ∩ U) ×ˢ Ioc 0 T
 
 /-- `O₀ = (W⋆ ∩ U₀) × (0, T]` (level 0). -/
-def O₀ (xstar : E d) : Set (E d × ℝ) := (P.Wstar xstar ∩ P.U₀) ×ˢ Ioc 0 T
+noncomputable def O₀ (xstar : E d) : Set (E d × ℝ) := (P.Wstar xstar ∩ P.U₀) ×ˢ Ioc 0 T
 
 theorem isParOpen_O (xstar : E d) : IsParOpen (P.O xstar) :=
   isParOpen_prod_Ioc (isOpen_ball.inter P.isOpen) _ _

@@ -132,7 +132,7 @@ def sausage : Set (E d × ℝ) :=
   {q | max (‖q.1 - C.xstar‖ - P.ℓ) 0 ^ 2 + (q.2 - (C.tstar - P.μ)) ^ 2 < P.μ ^ 2}
 
 /-- The (open) top disk `𝒟 = B_{λ₁}(x⋆) × {t⋆}`. -/
-def topDisk : Set (E d × ℝ) := ball C.xstar P.ℓ ×ˢ {C.tstar}
+noncomputable def topDisk : Set (E d × ℝ) := ball C.xstar P.ℓ ×ˢ {C.tstar}
 
 theorem mem_sausage {q : E d × ℝ} : q ∈ sausage C ↔
     max (‖q.1 - C.xstar‖ - P.ℓ) 0 ^ 2 + (q.2 - (C.tstar - P.μ)) ^ 2 < P.μ ^ 2 :=

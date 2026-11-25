@@ -104,27 +104,27 @@ build.
 
 ## Dependencies
 
-- [Mathlib](https://github.com/leanprover-community/mathlib4) `v4.35.0-rc3`.
+- [Mathlib](https://github.com/leanprover-community/mathlib4) `v4.36.0`.
 - [parabolic-basic-theory](https://github.com/willmfeldman/parabolic-basic-theory)
-  [`v0.3.0`](https://github.com/willmfeldman/parabolic-basic-theory/releases/tag/v0.3.0)
+  [`v0.4.0`](https://github.com/willmfeldman/parabolic-basic-theory/releases/tag/v0.4.0)
   (library `ParabolicBasic`). It supplies the classical solvability of the heat
   Dirichlet problem on ball cylinders (`ParabolicBasic.caloric_dirichlet_ball`),
   used in step 3; see `BernoulliComparison/Heat/Dirichlet.lean`.
 - [viscosity-solution-theory](https://github.com/willmfeldman/viscosity-solution-theory)
-  `v0.4.0` and
+  `v0.5.0` and
   [aleksandrov-differentiability](https://github.com/willmfeldman/aleksandrov-differentiability)
-  `v0.4.0`,
+  `v0.5.0`,
   dependencies of `ParabolicBasic`.
 
 ## Formalization metadata
 
 [formalization.yaml](formalization.yaml) records the headline declarations,
 their informal statements and expected axioms, and the comparator challenges.
-The directory [challenges/](challenges/) contains standalone
-[Comparator](https://github.com/leanprover/comparator) workspaces. Each
-`Challenge.lean` states theorems over a vocabulary that restates the library's
-definitions using Mathlib only (in `Vocabulary` modules), and each
-`Solution.lean` proves them from the library. See
+The directory [challenges/](challenges/) contains one standalone comparator
+workspace, `challenges/comparison`, checked with the toolchain's
+`lake comparator`. Its `Challenge.lean` states the theorems over a vocabulary
+that restates the library's definitions using Mathlib only (in
+`Vocabulary.lean`), and its `Solution.lean` proves them from the library. See
 [challenges/README.md](challenges/README.md) for the challenge set, its scope,
 and the verification procedure.
 

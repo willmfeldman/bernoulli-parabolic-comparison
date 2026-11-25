@@ -25,7 +25,14 @@ project:
     the intended sign: explicit strict barriers of both kinds whose free
     boundaries meet the test cylinder, positive constants as supersolutions,
     (0, ∅) as a relaxed subsolution, and a positive strict subsolution of the
-    heat equation that is not a supersolution.
+    heat equation that is not a supersolution. Four supporting statements
+    record two ingredients of the proof: sup-convolution over a compact kernel
+    maps a relaxed subsolution for Q to one for Q - Lℓ, and inf-convolution
+    maps a supersolution for Q to one for Q + Lℓ, where L is the Lipschitz
+    constant of Q and ℓ bounds the spatial size of the kernel; and a relaxed
+    subsolution is a viscosity subsolution of the heat equation, while a
+    supersolution is a viscosity supersolution of the heat equation in its
+    positivity set, both for smooth test functions touching from the past.
   authors: ["William M. Feldman"]
   responsible_maintainers: ["William M. Feldman"]
   license: "Apache-2.0"
@@ -82,10 +89,11 @@ fidelity:
   divergences: >-
     Sub- and supersolutions are defined by comparison with C^∞ classical strict
     barriers on test cylinders V × (a, b] compactly inside the domain, not by
-    test-function touching as in Kim; the repository shows that the function
+    test-function touching as in Kim; the supporting statements
+    challenge_subcaloric and challenge_supercaloric show that the function
     part of a relaxed subsolution and a supersolution in its positivity set are
-    viscosity solutions of the heat equation in the touching sense, but does
-    not prove that the two notions coincide. The subsolution may be relaxed: a
+    viscosity solutions of the heat equation in the touching sense, but the
+    repository does not prove that the two notions coincide. The subsolution may be relaxed: a
     pair (u, E) with E closed and containing {u > 0}, ordered on E. The free
     boundary coefficient Q is Lipschitz on the closure of U with a positive
     lower bound, instead of Q ≡ 1. The domain is a bounded open U ⊆ ℝᵈ and a
@@ -106,5 +114,17 @@ status:
       file: "challenges/comparison/Challenge.lean"
       comparator_config: "challenges/comparison/config.json"
     - declaration: "BernoulliComparison.challenge_model_sanity"
+      file: "challenges/comparison/Challenge.lean"
+      comparator_config: "challenges/comparison/config.json"
+    - declaration: "BernoulliComparison.challenge_supConv"
+      file: "challenges/comparison/Challenge.lean"
+      comparator_config: "challenges/comparison/config.json"
+    - declaration: "BernoulliComparison.challenge_infConv"
+      file: "challenges/comparison/Challenge.lean"
+      comparator_config: "challenges/comparison/config.json"
+    - declaration: "BernoulliComparison.challenge_subcaloric"
+      file: "challenges/comparison/Challenge.lean"
+      comparator_config: "challenges/comparison/config.json"
+    - declaration: "BernoulliComparison.challenge_supercaloric"
       file: "challenges/comparison/Challenge.lean"
       comparator_config: "challenges/comparison/config.json"

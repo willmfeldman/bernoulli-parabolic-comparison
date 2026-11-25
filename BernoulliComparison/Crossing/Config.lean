@@ -507,7 +507,7 @@ theorem isParaSuper_zero : IsParaSuper P.U₀ P.Qsuper₀ (Ioc 0 T) P.v₀ := by
   · funext x
     simp only [Qsuper₀, Pi.smul_apply, smul_eq_mul, NNReal.coe_mul, NNReal.coe_mk]
     ring
-  all_goals rfl
+  rfl
 
 /-- `(u₁, E₁)` is a relaxed subsolution for `Q₁⁻` on `U₁ × (2μ, T]`. -/
 theorem isParaRelaxedSub_one : IsParaRelaxedSub P.U₁ P.Qsub₁ (Ioc (2 * P.μ) T) P.u₁ P.E₁ := by
@@ -527,7 +527,7 @@ theorem isParaSuper_one : IsParaSuper P.U₁ P.Qsuper₁ (Ioc (2 * P.μ) T) P.v�
   · funext x
     simp only [Qsuper₁, Pi.smul_apply, smul_eq_mul, NNReal.coe_mul, NNReal.coe_mk]
     ring
-  all_goals rfl
+  rfl
 
 /-! ### (c) Composition -/
 
